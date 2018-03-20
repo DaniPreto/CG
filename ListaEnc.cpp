@@ -5,6 +5,7 @@
 ListaEnc::ListaEnc() {
     sizeL=0;
     sizeP=0;
+    sizePL = 0;
 }
 
 ListaEnc::ListaEnc(const ListaEnc& orig) {
@@ -13,12 +14,6 @@ ListaEnc::ListaEnc(const ListaEnc& orig) {
 ListaEnc::~ListaEnc() {
 }
 
-int ListaEnc::getsizeP(){
-    return sizeP;
-}
-int ListaEnc::getsizeL(){
-    return sizeL;
-}
 
 bool ListaEnc::temObjeto(std::string n){
     for(int i = 0; i<sizeP; i++){
@@ -30,50 +25,96 @@ bool ListaEnc::temObjeto(std::string n){
         if(n == linhas[i].getNome())
             return true;
     }
+    for(int i = 0; i<sizePL; i++){
+        if(n == poligonos[i].getNome())
+           return true;
+    }
     return false;
 }
 
-void ListaEnc::addP(int x, int y,string n){
+void ListaEnc::addP(double x, double y,std::string n){
     pontos[sizeP] = Ponto(x,y,n);
     sizeP = sizeP + 1;
 
 }	 	  	     	  	      	     	 	    	        	 	
-void ListaEnc::addL(int a, int b,int c, int d, string n){
+void ListaEnc::addL(double a, double b,double c, double d, std::string n){
     linhas[sizeL] = Linha(a,b,c,d,n);
     sizeL = sizeL + 1;
     
 }
+
     
-int ListaEnc::getpX(int pos){
-    int x = pontos[pos].getX();
+double ListaEnc::getpX(int pos){
+    double x = pontos[pos].getX();
     return x;
 }
 
-int ListaEnc::getpY(int pos){
-    int y = pontos[pos].getY();
+double ListaEnc::getpY(int pos){
+    double y = pontos[pos].getY();
     return y;
 }
-int ListaEnc::getlX(int pos){
-    int x = linhas[pos].getP1X();
+double ListaEnc::getlX(int pos){
+    double x = linhas[pos].getP1X();
     return x;
 }
-int ListaEnc::getlY(int pos){
-    int y = linhas[pos].getP1Y();
+double ListaEnc::getlY(int pos){
+    double y = linhas[pos].getP1Y();
     return y;
 }
-int ListaEnc::getlX2(int pos){
-    int x = linhas[pos].getP2X();
+double ListaEnc::getlX2(int pos){
+    double x = linhas[pos].getP2X();
     return x;
 }
-int ListaEnc::getlY2(int pos){
-    int y = linhas[pos].getP2Y();
+double ListaEnc::getlY2(int pos){
+    double y = linhas[pos].getP2Y();
     return y;
+}
+
+
+int ListaEnc::getsizeL(){
+    return sizeL;
+}	 	  	     	  	      	     	 	    	        	 	
+int ListaEnc::getsizeP(){
+    return sizeP;
+}
+int ListaEnc::getsizePL(){
+    return sizePL;
 }
     
 void ListaEnc::clearL(){
     sizeL = 0;
 }
-void ListaEnc::clearP(){	 	  	     	  	      	     	 	    	        	 	
+void ListaEnc::clearP(){
     sizeP = 0;
 }
 
+void ListaEnc::clearPL(){
+    sizePL = 0;
+}
+
+void ListaEnc::addPL(int a, double x[], double y[], std::string n){
+    Poligono pl(a,n);
+    for(int i =0; i<a;i++){
+        pl.addP(Ponto(x[i],y[i]));
+    }
+    poligonos[sizePL] = pl;
+    sizePL += 1;
+}
+
+double ListaEnc::getXdoPoligono(int pos,int a){
+    double x = poligonos[pos].getX(a);
+    return x;
+}
+
+double ListaEnc::getYdoPoligono(int pos,int a){
+    double y = poligonos[pos].getY(a);
+    return y;
+}	 	  	     	  	      	     	 	    	        	 	
+
+int ListaEnc::getSdoPoligono(int pos){
+    int s = poligonos[pos].getSize();
+    return s;
+}
+std::string ListaEnc::getNdoPoligono(int pos){
+    return poligonos[pos].getNome();
+}

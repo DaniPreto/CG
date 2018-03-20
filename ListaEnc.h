@@ -6,6 +6,7 @@
 #include <vector>
 #include "Ponto.h"
 #include "Linha.h"
+#include "Poligono.h"
 #include <string>
 
 class ListaEnc {
@@ -14,24 +15,38 @@ public:
     ListaEnc(const ListaEnc& orig);
     virtual ~ListaEnc();
     
-    int getsizeP();
-    int getsizeL();
+    void addP(double x, double y, std::string n);
+    void addL(double a, double b,double c, double d,std::string n);
+    void addPL(int a, double x[], double y[], std::string n);
     
-    void addP(int x, int y, string n);
-    void addL(int a, int b,int c, int d,string n);
     bool temObjeto(std::string n);
-    int getpX(int pos);
-    int getpY(int pos);
-    int getlX(int pos);
-    int getlY(int pos);
-    int getlX2(int pos);
-    int getlY2(int pos);
+    
+    double getpX(int pos);
+    double getpY(int pos);
+    
+    double getlX(int pos);
+    double getlY(int pos);
+    double getlX2(int pos);
+    double getlY2(int pos);
+    
+    int getsizeL();
+    int getsizeP();
+    int getsizePL();
+    
+    int getSdoPoligono(int pos);
+    std::string getNdoPoligono(int pos);
+    double getXdoPoligono(int pos,int a);
+    double getYdoPoligono(int pos,int a);
     
     void clearL();
     void clearP();
+    void clearPL();
+    
 private:
     Ponto pontos[200];
     Linha linhas[200];
+    Poligono poligonos[200];
+    int sizePL;
     int sizeP;
     int sizeL;
 

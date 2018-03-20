@@ -47,4 +47,3 @@ double Linha::getP2X(){
 double Linha::getP2Y(){
     return fim.getY();
 }
-
