@@ -11,13 +11,13 @@ Linha::Linha(const Linha& orig) {
 Linha::~Linha() {
 }
 
-Linha::Linha(int a, int b, int c , int d){
+Linha::Linha(double a, double b, double c , double d){
     Ponto p(a,b);
     Ponto p1(c,d);
     ini = p;
     fim = p1;
 }
-Linha::Linha(int a, int b, int c , int d,std::string n){
+Linha::Linha(double a, double b, double c , double d,std::string n){
     Ponto p(a,b);
     Ponto p1(c,d);
     ini = p;
@@ -25,26 +25,26 @@ Linha::Linha(int a, int b, int c , int d,std::string n){
     nome = n;
 }
 
-void Linha::setP1(int x, int y){
+void Linha::setP1(double x , double y){
     Ponto p(x,y);
     ini = p;
 }
-void Linha::setP2(int x, int y){
+void Linha::setP2(double x , double y){
     Ponto p(x,y);
     fim = p;
 }
-int Linha::getP1X(){
+double Linha::getP1X(){
     return ini.getX();
 }	 	  	     	  	      	     	 	    	        	 	
-int Linha::getP1Y(){
+double Linha::getP1Y(){
     return ini.getY();
 }
 
-int Linha::getP2X(){
+double Linha::getP2X(){
     return fim.getX();
 }
 
-int Linha::getP2Y(){
+double Linha::getP2Y(){
     return fim.getY();
 }
 

@@ -11,29 +11,29 @@ Ponto::Ponto(const Ponto& orig) {
 Ponto::~Ponto() {
 }
 
-Ponto::Ponto(int a, int b){
+Ponto::Ponto(double a, double b){
     x = a;
     y = b;
     }
 
-Ponto::Ponto(int a, int b,std::string n){
+Ponto::Ponto(double a, double b,std::string n){
     x = a;
     y = b;
     nome = n;
     }
 
-void Ponto::setX(int v){
+void Ponto::setX(double v){
     x = v;
     }
 
-void Ponto::setY(int v){
+void Ponto::setY(double v){
     y = v;
     }	 	  	     	  	      	     	 	    	        	 	
 
-int Ponto::getX(){
+double Ponto::getX(){
     return x;
     }
 
-int Ponto::getY(){
+double Ponto::getY(){
     return y;
     }

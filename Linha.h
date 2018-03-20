@@ -16,14 +16,14 @@ public:
     Linha();
     Linha(const Linha& orig);
     virtual ~Linha();
-    Linha(int a, int b, int c , int d);
-    Linha(int a, int b, int c , int d, std::string n);
-    void setP1(int x , int y);
-    void setP2(int x , int y);
-    int getP1X();
-    int getP1Y();
-    int getP2X();
-    int getP2Y();
+    Linha(double a, double b, double c , double d);
+    Linha(double a, double b, double c , double d, std::string n);
+    void setP1(double x , double y);
+    void setP2(double x , double y);
+    double getP1X();
+    double getP1Y();
+    double getP2X();
+    double getP2Y();
 private:
     Ponto ini;
     Ponto fim;

@@ -11,17 +11,17 @@ public:
     Ponto();
     Ponto(const Ponto& orig);
     virtual ~Ponto();
-    Ponto(int a, int b);
-    Ponto(int a, int b,std::string n);
+    Ponto(double a, double b);
+    Ponto(double a, double b,std::string n);
     
-    void setX(int v);
-    void setY(int v);
-    int getX();
-    int getY();
+    void setX(double v);
+    void setY(double v);
+    double getX();
+    double getY();
     
 private:
-    int x;
-    int y;
+    double x;
+    double y;
 
 };
 

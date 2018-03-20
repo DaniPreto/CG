@@ -50,10 +50,10 @@ GtkWidget *passo;
 //Lista de objetos graficos
 ListaEnc lista;
 
-int XvpMIN = 0;
-int YvpMIN = 0;
-int XvpMAX = 500;
-int YvpMAX = 500;
+double XvpMIN = 0;
+double YvpMIN = 0;
+double XvpMAX = 500;
+double YvpMAX = 500;
 
 /*Clear the surface, removing the scribbles*/
 static void clear_surface (){
@@ -104,16 +104,16 @@ static double transformadaY_viewport(double Yw){
     return Yvp;
 }
 
-static int* translacao(int x,int y, int dX,int dY){
-    int p[3] = {x,y,1};
-    int m[3][3] = 
+static double* translacao(double x,double y, double dX,double dY){
+    double p[3] = {x,y,1};
+    double m[3][3] = 
     {
         {1,0,0},
         {0,1,0},
         {dX,dY,1}
     };
     
-    int r[3];
+    double r[3];
     
     r[0] = (p[0]*m[0][0])+(p[1]*m[1][0])+(p[2]*m[2][0]);
     r[1] = (p[0]*m[0][1])+(p[1]*m[1][1])+(p[2]*m[2][1]);
@@ -122,16 +122,16 @@ static int* translacao(int x,int y, int dX,int dY){
     return r;
 }
 
-static int* escalonamento(int x,int y, int sX,int sY){
-    int p[3] = {x,y,1};
-    int m[3][3] = 
+static double* escalonamento(double x,double y, double sX,double sY){
+    double p[3] = {x,y,1};
+    double m[3][3] = 
     {
         {sX,0,0},
         {0,sY,0},
         {0,0,1}
     };
 
-    int r[3];
+    double r[3];
     
     r[0] = (p[0]*m[0][0])+(p[1]*m[1][0])+(p[2]*m[2][0]);
     r[1] = (p[0]*m[0][1])+(p[1]*m[1][1])+(p[2]*m[2][1]);
@@ -141,8 +141,8 @@ static int* escalonamento(int x,int y, int sX,int sY){
     
 }
 
-static int* rotacao(int x,int y, int t){
-    int p[3] = {x,y,1};
+static double* rotacao(double x,double y, double t){
+    double p[3] = {x,y,1};
     double m[3][3] = 
     {
         {cos(t),-sin(t),0},
@@ -150,7 +150,7 @@ static int* rotacao(int x,int y, int t){
         {0,0,1}
     };
     
-    int r[3];
+    double r[3];
     
     r[0] = (p[0]*m[0][0])+(p[1]*m[1][0])+(p[2]*m[2][0]);
     r[1] = (p[0]*m[0][1])+(p[1]*m[1][1])+(p[2]*m[2][1]);
@@ -160,7 +160,7 @@ static int* rotacao(int x,int y, int t){
 }
 
 /*Function that will be called when the ok button is pressed*/
-static void draw_linha(int a,int b,int c, int d){
+static void draw_linha(double a,double b,double c, double d){
     
     cairo_t *cr;
     cr = cairo_create (surface);
@@ -174,10 +174,10 @@ static void draw_linha(int a,int b,int c, int d){
  }
  
   static void draw_window(){
-    int aX = 0;
-    int aY = 0;
-    int bX = 500;
-    int bY = 500;
+    double aX = 0;
+    double aY = 0;
+    double bX = 500;
+    double bY = 500;
     
     draw_linha(aX,aY,bX,aY);
     draw_linha(bX,aY,bX,bY);
@@ -201,10 +201,10 @@ static void draw_linha(int a,int b,int c, int d){
  
  static void atualiza_surface(){
     clear_surface();
-    int a;
-    int b;
-    int c;
-    int d;
+    double a;
+    double b;
+    double c;
+    double d;
     
     //desenha os pontos
     for(int i =0;i<lista.getsizeP();i++){
@@ -258,10 +258,10 @@ static void cria_linha(){
     gtk_widget_show_all(window_linha);
  }
 static void desenha_linha(){
-  int a = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON(linha_x));
-  int b = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON(linha_y));
-  int c = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON(linha_x1));
-  int d = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON(linha_y1));
+  double a = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON(linha_x));
+  double b = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON(linha_y));
+  double c = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON(linha_x1));
+  double d = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON(linha_y1));
   string n = gtk_entry_get_text (GTK_ENTRY (button_name));
   
   if(!lista.temObjeto(n)){
