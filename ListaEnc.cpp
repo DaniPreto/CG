@@ -118,3 +118,29 @@ int ListaEnc::getSdoPoligono(int pos){
 std::string ListaEnc::getNdoPoligono(int pos){
     return poligonos[pos].getNome();
 }
+
+
+std::string ListaEnc::getNP(int pos){
+    return pontos[pos].getNome();
+}
+
+std::string ListaEnc::getNL(int pos){
+    return linhas[pos].getNome();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	 	  	     	  	      	     	 	    	        	 	

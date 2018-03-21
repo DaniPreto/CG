@@ -23,7 +23,9 @@ public:
     
     double getpX(int pos);
     double getpY(int pos);
+    std::string getNP(int pos);
     
+    std::string getNL(int pos);
     double getlX(int pos);
     double getlY(int pos);
     double getlX2(int pos);

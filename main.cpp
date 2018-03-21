@@ -200,6 +200,45 @@ static void draw_linha(double a,double b,double c, double d){
      
  }
  
+ enum
+{
+  COL_NAME = 0,
+  NUM_COLS
+} ;
+
+static void fill_model(string n){
+    GtkTreeIter iter;
+    gtk_list_store_append (store, &iter);
+    gtk_list_store_set (store, &iter,COL_NAME, n,-1);
+    gtk_widget_queue_draw(window_widget);
+    
+}
+
+static GtkTreeModel * create_and_fill_model (void){
+  
+  GtkTreeIter    iter;
+  store = gtk_list_store_new (NUM_COLS, G_TYPE_STRING);
+  
+  return GTK_TREE_MODEL (store);
+}
+ static void create_Model(){
+    GtkCellRenderer     *renderer;
+    GtkTreeModel        *model;
+    GtkWidget           *view;
+
+    renderer = gtk_cell_renderer_text_new ();
+    gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (display),
+                                               -1,      
+                                               "Name",  
+                                               renderer,
+                                               "text", COL_NAME,
+                                               NULL);
+    
+    model = create_and_fill_model ();
+    
+    gtk_tree_view_set_model (GTK_TREE_VIEW (display), model);
+     
+ }
  static void showDisplay(){
     
     GtkTreeIter iter;
@@ -214,6 +253,7 @@ static void draw_linha(double a,double b,double c, double d){
  
  static void atualiza_surface(){
     clear_surface();
+    gtk_list_store_clear (store);
     double a;
     double b;
     double c;
@@ -223,7 +263,8 @@ static void draw_linha(double a,double b,double c, double d){
     for(int i =0;i<lista.getsizeP();i++){
         a = lista.getpX(i);
         b = lista.getpY(i);
-        draw_linha(transformadaX_viewport(a),transformadaY_viewport(b),transformadaX_viewport(a),transformadaY_viewport(b));    
+        draw_linha(transformadaX_viewport(a),transformadaY_viewport(b),transformadaX_viewport(a),transformadaY_viewport(b));
+        fill_model(lista.getNP(i));
     } 
     
     //desenha as linhas
@@ -233,8 +274,11 @@ static void draw_linha(double a,double b,double c, double d){
         c = lista.getlX2(i);
         d = lista.getlY2(i);
         draw_linha(transformadaX_viewport(a),transformadaY_viewport(b),transformadaX_viewport(c),transformadaY_viewport(d));    
+        fill_model(lista.getNL(i));
     } 
-    /*
+    
+    //desenha poligonos
+    
     for(int i =0;i<lista.getsizePL();i++){
         
         double primeiro[2];
@@ -248,12 +292,13 @@ static void draw_linha(double a,double b,double c, double d){
         for(int z = 1; z<lista.getSdoPoligono(i);z++){
             atual[0] = lista.getXdoPoligono(i,z);
             atual[1] = lista.getYdoPoligono(i,z);
-            draw_linha(transformadaX_viewport(anterior[0]),transformadaY_viewport(anterior[1]),transformadaX_viewport(anterior[0]),transformadaY_viewport(anterior[0]));
+            draw_linha(transformadaX_viewport(anterior[0]),transformadaY_viewport(anterior[1]),transformadaX_viewport(atual[0]),transformadaY_viewport(atual[1]));
             anterior[0] = atual[0];
             anterior[1] = atual[1];
         }
-        //draw_linha(transformadaX_viewport(anterior[0]),transformadaY_viewport(anterior[1]),transformadaX_viewport(primeiro[0]),transformadaY_viewport(primeiro[1]));
-    } */
+        draw_linha(transformadaX_viewport(anterior[0]),transformadaY_viewport(anterior[1]),transformadaX_viewport(primeiro[0]),transformadaY_viewport(primeiro[1]));
+        fill_model(lista.getNdoPoligono(i));
+    } 
     
     //desenha a window
     //draw_window();
@@ -283,6 +328,8 @@ static void desenha_ponto(){
     
     gtk_widget_hide(window_ponto);
     atualiza_surface();
+    
+    
     
     
 }
@@ -331,7 +378,6 @@ static void desenha_poligono(){
         lista.addPL(size,xis,ypsilon,n);
         gtk_widget_hide(window_poligono);
         atualiza_surface();
-    
     }
 } 
  static void move_up(){
@@ -428,8 +474,9 @@ int main(int argc, char *argv[]){
   window_linha = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "window_linha") );
   window_poligono = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "window_poligono") );
   drawing_area = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "drawing_area") );
+  
   display = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "display") );
-  store = GTK_LIST_STORE( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "store") );
+  create_Model();
   
   button_color = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "button_color") );
   button_name = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "button_name") );
@@ -448,8 +495,8 @@ int main(int argc, char *argv[]){
   linha_y = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "linha_y") );
   linha_x1 = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "linha_x1") );
   linha_y1 = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "linha_y1") );
-  poligono_x = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "ponto_x") );
-  poligono_y = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "ponto_y") );
+  poligono_x = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "poligono_x") );
+  poligono_y = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "poligono_y") );
   poligono_s = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "poligono_s") );
   
   //Botoes de controle da window
