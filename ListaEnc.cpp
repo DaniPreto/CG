@@ -32,6 +32,13 @@ bool ListaEnc::temObjeto(std::string n){
     return false;
 }
 
+bool ListaEnc::isEmpty(){
+    if(sizeP > 0 || sizeL > 0 || sizePL > 0){
+        return false;
+    }
+    return true;
+}
+
 void ListaEnc::addP(double x, double y,std::string n){
     pontos[sizeP] = Ponto(x,y,n);
     sizeP = sizeP + 1;
@@ -115,6 +122,7 @@ int ListaEnc::getSdoPoligono(int pos){
     int s = poligonos[pos].getSize();
     return s;
 }
+
 std::string ListaEnc::getNdoPoligono(int pos){
     return poligonos[pos].getNome();
 }
@@ -128,6 +136,16 @@ std::string ListaEnc::getNL(int pos){
     return linhas[pos].getNome();
 }
 
+void ListaEnc::setP(double x,double y, int pos){
+    pontos[pos].setX(x);
+    pontos[pos].setY(y);
+}
+void ListaEnc::setL(double x,double y, int pos){
+    linhas[pos].setP1(x,y);
+}
+void ListaEnc::setL1(double x,double y, int pos){
+    linhas[pos].setP2(x,y);
+}
 
 
 

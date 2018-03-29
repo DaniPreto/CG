@@ -10,35 +10,35 @@ Window::Window(const Window& orig) {
 Window::~Window() {
 }
 
-Window::Window(int x, int y, int c,int d){
+Window::Window(double x, double y, double c,double d){
     max = Ponto(x,y);
     min = Ponto(c,d);
     
     }
 
-void Window::setMAX(int x, int y){
+void Window::setMAX(double x, double y){
     max.setX(x);
     max.setY(y);
     }
 
-void Window::setMIN(int x, int y){
+void Window::setMIN(double x, double y){
     min.setX(x);
     min.setY(y);
     }	 	  	     	  	      	     	 	    	        	 	
 
-int Window::getXmax(){
+double Window::getXmax(){
     return max.getX();
     }
 
-int Window::getXmin(){
+double Window::getXmin(){
     return min.getX();
     }
     
-int Window::getYmax(){
+double Window::getYmax(){
     return max.getY();
     }
 
-int Window::getYmin(){
+double Window::getYmin(){
     return min.getY();
     }
 

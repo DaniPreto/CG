@@ -10,13 +10,13 @@ public:
     Window();
     Window(const Window& orig);
     virtual ~Window();
-    Window(int x, int y, int c,int d);
-    void setMAX(int x, int y);
-    void setMIN(int x, int y);
-    int getXmax();
-    int getYmax();
-    int getXmin();
-    int getYmin();
+    Window(double x, double y, double c,double d);
+    void setMAX(double x, double y);
+    void setMIN(double x, double y);
+    double getXmax();
+    double getYmax();
+    double getXmin();
+    double getYmin();
     
 private:
     Ponto max;

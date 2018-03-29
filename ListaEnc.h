@@ -20,6 +20,7 @@ public:
     void addPL(int a, double x[], double y[], std::string n);
     
     bool temObjeto(std::string n);
+    bool isEmpty();
     
     double getpX(int pos);
     double getpY(int pos);
@@ -43,6 +44,11 @@ public:
     void clearL();
     void clearP();
     void clearPL();
+    
+    void setP(double x,double y, int pos);
+    void setL(double x,double y, int pos);
+    void setL1(double x,double y, int pos);
+    
     
 private:
     Ponto pontos[200];
