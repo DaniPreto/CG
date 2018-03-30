@@ -375,16 +375,19 @@
     <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="adjustmentPontoX">
+    <property name="lower">-1000</property>
     <property name="upper">1000</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="adjustmentPontoY">
+    <property name="lower">-1000</property>
     <property name="upper">1000</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="adjustmentPontoZ">
+    <property name="lower">-1000</property>
     <property name="upper">1000</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
@@ -817,6 +820,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="adjustment">adjustmentTranslacaoX</property>
+            <property name="digits">1</property>
           </object>
           <packing>
             <property name="left_attach">0</property>
@@ -828,6 +832,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="adjustment">adjustmentTranslacaoY</property>
+            <property name="digits">1</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -839,6 +844,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="adjustment">adjustmentTranslacaoZ</property>
+            <property name="digits">1</property>
           </object>
           <packing>
             <property name="left_attach">2</property>

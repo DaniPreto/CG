@@ -183,20 +183,6 @@ static double transformadaY_viewport(double Yw){
     return Yvp;
 }
 
-static double * calculoCentroGeo(int n,double *x, double *y){
-    double somaX = 0;
-    double somaY = 0;
-    
-    for (int i = 0; i<n;i++){
-        somaX+= *(x+i);
-        somaY+= *(y+i);
-    }
-    
-    double r[2];
-    r[1] = somaX/n;
-    r[2] = somaY/n;
-    return r;
-}
 
 static void draw_window(){
     double Xmax = window.getXmax();
@@ -209,80 +195,6 @@ static void draw_window(){
     draw_linha(transformadaX_viewport(Xmin), transformadaY_viewport(Ymin),transformadaX_viewport(Xmin), transformadaY_viewport(Ymax));
     draw_linha(transformadaX_viewport(Xmin), transformadaY_viewport(Ymax),transformadaX_viewport(Xmax),transformadaY_viewport(Ymax));
 }
-
-static double * translacao(double x,double y, double dX,double dY){
-    double p[3] = {x,y,1};
-    double m[3][3] = 
-    {
-        {1,0,0},
-        {0,1,0},
-        {dX,dY,1}
-    };
-    
-    double r[3];
-    
-    r[0] = (p[0]*m[0][0])+(p[1]*m[1][0])+(p[2]*m[2][0]);
-    r[1] = (p[0]*m[0][1])+(p[1]*m[1][1])+(p[2]*m[2][1]);
-    r[2] = (p[0]*m[0][2])+(p[1]*m[1][2])+(p[2]*m[2][2]);
-
-    return r;
-}
-
-static double * escalonamento(double x,double y, double sX,double sY){
-    double p[3] = {x,y,1};
-    double m[3][3] = 
-    {
-        {sX,0,0},
-        {0,sY,0},
-        {0,0,1}
-    };
-
-    double r[3];
-    
-    r[0] = (p[0]*m[0][0])+(p[1]*m[1][0])+(p[2]*m[2][0]);
-    r[1] = (p[0]*m[0][1])+(p[1]*m[1][1])+(p[2]*m[2][1]);
-    r[2] = (p[0]*m[0][2])+(p[1]*m[1][2])+(p[2]*m[2][2]);
-    
-    return r;
-    
-}
-
-static double * rotacao(double x,double y, double t){
-    double p[3] = {x,y,1};
-    double m[3][3] = 
-    {
-        {cos(t),-sin(t),0},
-        {sin(t),cos(t),0},
-        {0,0,1}
-    };
-    
-    double r[3];
-    
-    r[0] = (p[0]*m[0][0])+(p[1]*m[1][0])+(p[2]*m[2][0]);
-    r[1] = (p[0]*m[0][1])+(p[1]*m[1][1])+(p[2]*m[2][1]);
-    r[2] = (p[0]*m[0][2])+(p[1]*m[1][2])+(p[2]*m[2][2]);
-    
-    return r;
-}
-
-
-static double * escalonamentoObjeto(double x,double y, double sX,double sY){
-    double *t = translacao(x,y,-x,-y);
-    double *e = escalonamento(*(t),*(t+1),sX,sY);
-    double *r = translacao(*(e),*(e+1),x,y);
-    return r;
-}
-
-static double * rotacaoObjeto(double x,double y, double teta,double cX, double cY){
-    double *t = translacao(x,y,-cX,-cY);
-    double *e = rotacao(*(t),*(t+1),teta);
-    double *r = translacao(*(e),*(e+1),cX,cY);
-    return r;
-}
-
- 
-
-
  
  static void atualiza_surface(){
     clear_surface();
@@ -404,24 +316,208 @@ static void transforma(){
     
 }
 
+static double * calculoCentroGeo(){
+    double somaX = 0;
+    double somaY = 0;
+    
+    for (int i = 0; i<size;i++){
+        somaX = somaX + xis[i];
+        somaY = somaY + ypsilon[i];
+    }
+    
+    double r[2];
+    r[0] = somaX/size;
+    r[1] = somaY/size;
+    return r;
+}
+
+static double * translacao(double x,double y, double dX,double dY){
+    double p[3] = {x,y,1};
+    double m[3][3] = 
+    {
+        {1,0,0},
+        {0,1,0},
+        {dX,dY,1}
+    };
+    
+    double r[3];
+    
+    r[0] = (p[0]*m[0][0])+(p[1]*m[1][0])+(p[2]*m[2][0]);
+    r[1] = (p[0]*m[0][1])+(p[1]*m[1][1])+(p[2]*m[2][1]);
+    r[2] = (p[0]*m[0][2])+(p[1]*m[1][2])+(p[2]*m[2][2]);
+
+    return r;
+}
+
+static double * escalonamento(double x,double y, double sX,double sY){
+    double p[3] = {x,y,1};
+    double m[3][3] = 
+    {
+        {sX,0,0},
+        {0,sY,0},
+        {0,0,1}
+    };
+
+    double r[3];
+    
+    r[0] = (p[0]*m[0][0])+(p[1]*m[1][0])+(p[2]*m[2][0]);
+    r[1] = (p[0]*m[0][1])+(p[1]*m[1][1])+(p[2]*m[2][1]);
+    r[2] = (p[0]*m[0][2])+(p[1]*m[1][2])+(p[2]*m[2][2]);
+    
+    return r;
+    
+}
+
+static double * rotacao(double x,double y, double t){
+    double p[3] = {x,y,1};
+    double m[3][3] = 
+    {
+        {cos(t),-sin(t),0},
+        {sin(t),cos(t),0},
+        {0,0,1}
+    };
+    
+    double r[3];
+    
+    r[0] = (p[0]*m[0][0])+(p[1]*m[1][0])+(p[2]*m[2][0]);
+    r[1] = (p[0]*m[0][1])+(p[1]*m[1][1])+(p[2]*m[2][1]);
+    r[2] = (p[0]*m[0][2])+(p[1]*m[1][2])+(p[2]*m[2][2]);
+    
+    return r;
+}
+
+
+static double * rotacaoObjeto(double x,double y, double teta,double cX, double cY){
+    double *t = translacao(x,y,-cX,-cY);
+    double *e = rotacao(*(t),*(t+1),teta);
+    double *r = translacao(*(e),*(e+1),cX,cY);
+    return r;
+}
+
 static void translada(){
     double dX = gtk_spin_button_get_value (GTK_SPIN_BUTTON(transformacao_x));
     double dY = gtk_spin_button_get_value (GTK_SPIN_BUTTON(transformacao_y));
+    string n = gtk_entry_get_text (GTK_ENTRY (button_name));
+    double x;
+    double y;
+    double a;
+    double b;
+    double * aux;
     
+    int type = lista.getType(n);
     
-    
-    
-    
-
-    
-    
-    
+    if(type == 0){
+        x = lista.getpX(n);
+        y = lista.getpY(n);
+        aux = translacao(x,y, dX,dY);
+        lista.setP(*(aux),*(aux+1), n);
+        gtk_widget_hide(window_transformacao);
+        atualiza_surface();
+        
+    }
+    else if(type == 1){
+        x = lista.getlX(n);
+        y = lista.getlY(n);
+        aux = translacao(x,y, dX,dY);
+        lista.setL(*(aux),*(aux+1), n);
+        
+        a = lista.getlX2(n);
+        b = lista.getlY2(n);
+        aux = translacao(a,b, dX,dY);
+        lista.setL1(*(aux),*(aux+1), n);
+        
+        gtk_widget_hide(window_transformacao);
+        atualiza_surface();
+        
+    }
+    else if(type == 2){
+        int q = lista.getSdoPoligono(n);
+        
+        for (int i =0; i<q; i++){
+            x = lista.getXdoPoligono(n,i);
+            y = lista.getYdoPoligono(n,i);
+            aux = translacao(x,y, dX,dY);
+            lista.setPPoligono(*(aux),*(aux+1), n,i);
+        }
+        gtk_widget_hide(window_transformacao);
+        atualiza_surface();
+    }
 }
 
 static void escalona(){
     double sX = gtk_spin_button_get_value (GTK_SPIN_BUTTON(transformacao_x));
     double sY = gtk_spin_button_get_value (GTK_SPIN_BUTTON(transformacao_y));
+    string n = gtk_entry_get_text (GTK_ENTRY (button_name));
+    double x;
+    double y;
+    double a;
+    double b;
+    double * aux;
+    double * centro;
     
+    int type = lista.getType(n);
+    
+    if(type == 0){
+        x = lista.getpX(n);
+        y = lista.getpY(n);
+        
+        aux = escalonamento(x,y,sX,sY);
+        
+        lista.setP(*(aux),*(aux+1), n);
+        
+        gtk_widget_hide(window_transformacao);
+        atualiza_surface();
+        
+    }
+    else if(type == 1){
+        x = lista.getlX(n);
+        y = lista.getlY(n);
+        a = lista.getlX2(n);
+        b = lista.getlY2(n);
+        
+        xis[0] = x;
+        ypsilon[0] = y;
+        xis[1] = a;
+        ypsilon[1] = b;
+        size = 2;
+        centro = calculoCentroGeo();
+        
+        aux = translacao(x,y, -*(centro),-*(centro+1));
+        aux = escalonamento(*(aux),*(aux+1),sX,sY);
+        aux = translacao(*(aux),*(aux+1), *(centro),*(centro+1));
+        lista.setL(*(aux),*(aux+1), n);
+        
+        aux = translacao(a,b, -*(centro),-*(centro+1));
+        aux = escalonamento(*(aux),*(aux+1),sX,sY);
+        aux = translacao(*(aux),*(aux+1), *(centro),*(centro+1));
+        lista.setL1(*(aux),*(aux+1), n);
+        
+        gtk_widget_hide(window_transformacao);
+        atualiza_surface();
+    
+        
+    }
+    else if(type == 2){
+        int q = lista.getSdoPoligono(n);
+        size = q;
+        for (int i =0; i<q; i++){
+            xis[i] = lista.getXdoPoligono(n,i);
+            ypsilon[i] = lista.getYdoPoligono(n,i);
+        }
+        centro = calculoCentroGeo();
+        
+        for (int i =0; i<q; i++){
+            x = lista.getXdoPoligono(n,i);
+            y = lista.getYdoPoligono(n,i);
+            aux = translacao(x,y, -*(centro),-*(centro+1));
+            aux = escalonamento(*(aux),*(aux+1),sX,sY);
+            aux = translacao(*(aux),*(aux+1), *(centro),*(centro+1));
+            lista.setPPoligono(*(aux),*(aux+1), n,i);
+        }
+        
+        gtk_widget_hide(window_transformacao);
+        atualiza_surface();
+    }
 }
 
 static void rotaciona(){
@@ -617,6 +713,8 @@ int main(int argc, char *argv[]){
   
   //sinais de transformacao
    g_signal_connect (button_transformar, "button-release-event", G_CALLBACK (transforma),NULL);
+   g_signal_connect (button_translacao, "button-release-event", G_CALLBACK (translada),NULL);
+   g_signal_connect (button_escalonamento, "button-release-event", G_CALLBACK (escalona),NULL);
   
   //sinais controle da window
   g_signal_connect (button_up, "button-release-event", G_CALLBACK (move_up),NULL);
