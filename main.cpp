@@ -386,14 +386,6 @@ static double * rotacao(double x,double y, double t){
     return r;
 }
 
-
-static double * rotacaoObjeto(double x,double y, double teta,double cX, double cY){
-    double *t = translacao(x,y,-cX,-cY);
-    double *e = rotacao(*(t),*(t+1),teta);
-    double *r = translacao(*(e),*(e+1),cX,cY);
-    return r;
-}
-
 static void translada(){
     double dX = gtk_spin_button_get_value (GTK_SPIN_BUTTON(transformacao_x));
     double dY = gtk_spin_button_get_value (GTK_SPIN_BUTTON(transformacao_y));
@@ -522,18 +514,188 @@ static void escalona(){
 
 static void rotaciona(){
     double teta = gtk_spin_button_get_value (GTK_SPIN_BUTTON(angulo));
+    string n = gtk_entry_get_text (GTK_ENTRY (button_name));
+    double x;
+    double y;
+    double a;
+    double b;
+    double * aux;
+    double * centro;
     
+    int type = lista.getType(n);
+    
+    if(type == 0){
+        x = lista.getpX(n);
+        y = lista.getpY(n);
+        
+        aux =  rotacao(x,y,teta);
+        
+        lista.setP(*(aux),*(aux+1), n);
+        
+        gtk_widget_hide(window_transformacao);
+        atualiza_surface();
+        
+    }
+    else if(type == 1){
+        x = lista.getlX(n);
+        y = lista.getlY(n);
+        aux = rotacao(x,y,teta);
+        lista.setL(*(aux),*(aux+1), n);
+        
+        a = lista.getlX2(n);
+        b = lista.getlY2(n);
+        aux = rotacao(a,b,teta);
+        lista.setL1(*(aux),*(aux+1), n);
+        
+        gtk_widget_hide(window_transformacao);
+        atualiza_surface();
+        
+    }
+    else if(type == 2){
+        int q = lista.getSdoPoligono(n);
+        
+        for (int i =0; i<q; i++){
+            x = lista.getXdoPoligono(n,i);
+            y = lista.getYdoPoligono(n,i);
+            aux = rotacao(x,y,teta);
+            lista.setPPoligono(*(aux),*(aux+1), n,i);
+        }
+        gtk_widget_hide(window_transformacao);
+        atualiza_surface();
+    }
 }
 
 static void rotacionaCObj(){
     double teta = gtk_spin_button_get_value (GTK_SPIN_BUTTON(angulo));
+    string n = gtk_entry_get_text (GTK_ENTRY (button_name));
+    double x;
+    double y;
+    double a;
+    double b;
+    double * aux;
+    double * centro;
+    
+    int type = lista.getType(n);
+    
+    if(type == 0){
+        gtk_widget_hide(window_transformacao);
+        
+    }
+    else if(type == 1){
+        x = lista.getlX(n);
+        y = lista.getlY(n);
+        a = lista.getlX2(n);
+        b = lista.getlY2(n);
+        
+        xis[0] = x;
+        ypsilon[0] = y;
+        xis[1] = a;
+        ypsilon[1] = b;
+        size = 2;
+        centro = calculoCentroGeo();
+        
+        aux = translacao(x,y, -*(centro),-*(centro+1));
+        aux = rotacao(*(aux),*(aux+1),teta);
+        aux = translacao(*(aux),*(aux+1), *(centro),*(centro+1));
+        lista.setL(*(aux),*(aux+1), n);
+        
+        aux = translacao(a,b, -*(centro),-*(centro+1));
+        aux = rotacao(*(aux),*(aux+1),teta);
+        aux = translacao(*(aux),*(aux+1), *(centro),*(centro+1));
+        lista.setL1(*(aux),*(aux+1), n);
+        
+        gtk_widget_hide(window_transformacao);
+        atualiza_surface();
+    
+        
+    }
+    else if(type == 2){
+        int q = lista.getSdoPoligono(n);
+        size = q;
+        for (int i =0; i<q; i++){
+            xis[i] = lista.getXdoPoligono(n,i);
+            ypsilon[i] = lista.getYdoPoligono(n,i);
+        }
+        centro = calculoCentroGeo();
+        
+        for (int i =0; i<q; i++){
+            x = lista.getXdoPoligono(n,i);
+            y = lista.getYdoPoligono(n,i);
+            aux = translacao(x,y, -*(centro),-*(centro+1));
+            aux = rotacao(*(aux),*(aux+1),teta);
+            aux = translacao(*(aux),*(aux+1), *(centro),*(centro+1));
+            lista.setPPoligono(*(aux),*(aux+1), n,i);
+        }
+        
+        gtk_widget_hide(window_transformacao);
+        atualiza_surface();
+    }
     
 }
 
 static void rotacionaPQ(){
-    double x = gtk_spin_button_get_value (GTK_SPIN_BUTTON(transformacao_x));
-    double y = gtk_spin_button_get_value (GTK_SPIN_BUTTON(transformacao_y));
+    double pX = gtk_spin_button_get_value (GTK_SPIN_BUTTON(transformacao_x));
+    double pY = gtk_spin_button_get_value (GTK_SPIN_BUTTON(transformacao_y));
     double teta = gtk_spin_button_get_value (GTK_SPIN_BUTTON(angulo));
+    string n = gtk_entry_get_text (GTK_ENTRY (button_name));
+    double x;
+    double y;
+    double a;
+    double b;
+    double * aux;
+    
+    int type = lista.getType(n);
+    
+    if(type == 0){
+        x = lista.getpX(n);
+        y = lista.getpY(n);
+        
+        aux = translacao(x,y, -pX,-pY);
+        aux = rotacao(*(aux),*(aux+1),teta);
+        aux = translacao(*(aux),*(aux+1), pX,pY);
+        
+        lista.setP(*(aux),*(aux+1), n);
+        
+        gtk_widget_hide(window_transformacao);
+        atualiza_surface();
+        
+    }
+    else if(type == 1){
+        x = lista.getlX(n);
+        y = lista.getlY(n);
+        a = lista.getlX2(n);
+        b = lista.getlY2(n);
+        
+        aux = translacao(x,y, -pX,-pY);
+        aux = rotacao(*(aux),*(aux+1),teta);
+        aux = translacao(*(aux),*(aux+1), pX,pY);
+        lista.setL(*(aux),*(aux+1), n);
+        
+        aux = translacao(a,b, -pX,-pY);
+        aux = rotacao(*(aux),*(aux+1),teta);
+        aux = translacao(*(aux),*(aux+1),pX,pY);
+        lista.setL1(*(aux),*(aux+1), n);
+        
+        gtk_widget_hide(window_transformacao);
+        atualiza_surface();
+    
+        
+    }
+    else if(type == 2){
+        int q = lista.getSdoPoligono(n);
+    
+        for (int i =0; i<q; i++){
+            x = lista.getXdoPoligono(n,i);
+            y = lista.getYdoPoligono(n,i);
+            aux = translacao(x,y, -pX,-pY);
+            aux = rotacao(*(aux),*(aux+1),teta);
+            aux = translacao(*(aux),*(aux+1), pX,pY);
+            lista.setPPoligono(*(aux),*(aux+1), n,i);
+        }
+        
+        gtk_widget_hide(window_transformacao);
+        atualiza_surface();
+    }
     
 }
 
@@ -715,6 +877,9 @@ int main(int argc, char *argv[]){
    g_signal_connect (button_transformar, "button-release-event", G_CALLBACK (transforma),NULL);
    g_signal_connect (button_translacao, "button-release-event", G_CALLBACK (translada),NULL);
    g_signal_connect (button_escalonamento, "button-release-event", G_CALLBACK (escalona),NULL);
+   g_signal_connect (button_rotacao, "button-release-event", G_CALLBACK (rotaciona),NULL);
+   g_signal_connect (button_rotacaoCObj, "button-release-event", G_CALLBACK (rotacionaCObj),NULL);
+   g_signal_connect (button_rotacaoPQ, "button-release-event", G_CALLBACK (rotacionaPQ),NULL);
   
   //sinais controle da window
   g_signal_connect (button_up, "button-release-event", G_CALLBACK (move_up),NULL);
