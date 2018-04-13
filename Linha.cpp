@@ -47,3 +47,29 @@ double Linha::getP2X(){
 double Linha::getP2Y(){
     return fim.getY();
 }
+
+
+//----------------------------------------------------------------------PPT
+
+void Linha::setP1SCN(double x , double y){
+    ini.setU(x);
+    ini.setV(y);
+}
+void Linha::setP2SCN(double x , double y){
+    fim.setU(x);
+    fim.setV(y);
+}
+double Linha::getP1U(){
+    return ini.getU();
+}	 	  	     	  	      	     	 	    	        	 	
+double Linha::getP1V(){
+    return ini.getV();
+}
+
+double Linha::getP2U(){
+    return fim.getU();
+}
+
+double Linha::getP2V(){
+    return fim.getV();
+}

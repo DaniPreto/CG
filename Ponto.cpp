@@ -22,12 +22,12 @@ Ponto::Ponto(double a, double b,std::string n){
     nome = n;
     }
 
-void Ponto::setX(double v){
-    x = v;
+void Ponto::setX(double valor){
+    x = valor;
     }
 
-void Ponto::setY(double v){
-    y = v;
+void Ponto::setY(double valor){
+    y = valor;
     }	 	  	     	  	      	     	 	    	        	 	
 
 double Ponto::getX(){
@@ -36,4 +36,24 @@ double Ponto::getX(){
 
 double Ponto::getY(){
     return y;
+    }
+    
+
+//-----------------------------------------------------------------PPT
+
+
+void Ponto::setU(double valor){
+    u = valor;
+    }
+
+void Ponto::setV(double valor){
+    v = valor;
+    }	 	  	     	  	      	     	 	    	        	 	
+
+double Ponto::getU(){
+    return u;
+    }
+
+double Ponto::getV(){
+    return v;
     }

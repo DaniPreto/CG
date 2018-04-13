@@ -32,6 +32,11 @@ public:
     double getpX(std::string n);
     double getpY(std::string n);
     
+    //Get X e Y do ponto SCN
+    double getpU(int pos);
+    double getpV(int pos);
+    
+    
     //Get nome do objeto
     std::string getNP(int pos);
     std::string getNL(int pos);
@@ -47,6 +52,12 @@ public:
     double getlX2(std::string n);
     double getlY2(std::string n);
     
+    //Get X e Y da linha SCN
+    double getlU(int pos);
+    double getlV(int pos);
+    double getlU2(int pos);
+    double getlV2(int pos);
+    
     //Get tamanho da lista
     int getsizeL();
     int getsizeP();
@@ -59,6 +70,10 @@ public:
     double getYdoPoligono(int pos,int a);
     double getXdoPoligono(std::string n,int a);
     double getYdoPoligono(std::string n,int a);
+    
+    //Get poligono SCN
+    double getUdoPoligono(int pos,int a);
+    double getVdoPoligono(int pos,int a);
     
     //Clear lista
     void clearL();
@@ -73,6 +88,12 @@ public:
     void setL(double x,double y, std::string n);
     void setL1(double x,double y, std::string n);
     void setPPoligono(double x,double y,std::string n, int pos);
+    
+    //Set objetos SCN
+    void setPSCN(double x,double y, int pos);
+    void setLSCN(double x,double y, int pos);
+    void setL1SCN(double x,double y, int pos);
+    void setPPoligonoSCN(double x,double y,int n, int pos);
     
     
 private:

@@ -121,6 +121,21 @@ void ListaEnc::clearP(){
     sizeP = 0;
 }
 
+void ListaEnc::setPSCN(double x,double y, int pos){
+    pontos[pos].setU(x);
+    pontos[pos].setV(y);
+}
+
+double ListaEnc::getpU(int pos){
+    double x = pontos[pos].getU();
+    return x;
+}
+
+double ListaEnc::getpV(int pos){
+    double y = pontos[pos].getV();
+    return y;
+}
+
 //--------------------------------------------------------------------------Linha
 int ListaEnc::getsizeL(){
     return sizeL;
@@ -216,6 +231,30 @@ void ListaEnc::clearL(){
     sizeL = 0;
 }
 
+void ListaEnc::setLSCN(double x,double y, int pos){
+    linhas[pos].setP1SCN(x,y);
+}
+void ListaEnc::setL1SCN(double x,double y, int pos){
+    linhas[pos].setP2SCN(x,y);
+}
+
+double ListaEnc::getlU(int pos){
+    double x = linhas[pos].getP1U();
+    return x;
+}
+double ListaEnc::getlV(int pos){
+    double y = linhas[pos].getP1V();
+    return y;
+}
+double ListaEnc::getlU2(int pos){
+    double x = linhas[pos].getP2U();
+    return x;
+}
+double ListaEnc::getlV2(int pos){
+    double y = linhas[pos].getP2V();
+    return y;
+}
+
 //------------------------------------------------------------------------Poligono
 int ListaEnc::getsizePL(){
     return sizePL;
@@ -244,7 +283,7 @@ int ListaEnc::getSdoPoligono(std::string n){
 void ListaEnc::addPL(int a, double x[], double y[], std::string n){
     Poligono pl(a,n);
     for(int i =0; i<a;i++){
-        pl.addP(Ponto(x[i],y[i]));
+        pl.addP(x[i],y[i]);
     }
     poligonos[sizePL] = pl;
     sizePL += 1;
@@ -283,14 +322,29 @@ double ListaEnc::getYdoPoligono(std::string n,int a){
 void ListaEnc::setPPoligono(double x,double y,std::string n, int pos){
     for(int i = 0; i<sizePL; i++){
         if(n == poligonos[i].getNome()){
-            poligonos[i].setP(Ponto(x,y),pos);
+            poligonos[i].setP(x,y,pos);
         }
     }
+}
+
+void ListaEnc::setPPoligonoSCN(double x,double y,int n, int pos){
+    poligonos[n].setPSCN(x,y,pos);
 }
 
 void ListaEnc::clearPL(){
     sizePL = 0;
 }
+
+double ListaEnc::getUdoPoligono(int pos,int a){
+    double x = poligonos[pos].getU(a);
+    return x;
+}
+
+double ListaEnc::getVdoPoligono(int pos,int a){
+    double y = poligonos[pos].getV(a);
+    return y;
+}
+
 
 
 

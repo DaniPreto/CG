@@ -24,6 +24,13 @@ public:
     double getP1Y();
     double getP2X();
     double getP2Y();
+    
+    void setP1SCN(double x , double y);
+    void setP2SCN(double x , double y);
+    double getP1U();
+    double getP1V();
+    double getP2U();
+    double getP2V();
 private:
     Ponto ini;
     Ponto fim;

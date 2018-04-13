@@ -10,14 +10,15 @@ using namespace std;
 #include "Poligono.h"
 #include "Linha.h"
 #include "Ponto.h"
-
+ 
 
 static cairo_surface_t *surface = NULL;
-
+ 
 //Windows
 GtkWidget *window_widget;
-GtkWidget *window_draw;
+GtkWidget *window_desenho; 
 GtkWidget *window_transformacao;
+GtkWidget *window_objetos;
 Window window;
 
 
@@ -25,6 +26,7 @@ Window window;
 GtkWidget *display;
 GtkListStore *store;
 GtkWidget *drawing_area;
+GtkWidget *button_objetos;
 
 //Botoes de Desenho
 GtkWidget *button_draw;
@@ -45,7 +47,7 @@ GtkWidget *button_name;
 GtkWidget *poligono_s;
 
 
-//Botoes de Tronsformacao
+//Botoes de Transformacao
 GtkWidget *button_transformar;
 GtkWidget *transformacao_x;
 GtkWidget *transformacao_y;
@@ -57,7 +59,6 @@ GtkWidget *button_rotacaoPQ;
 GtkWidget *angulo;
 
 
-
 //Botoes de controle da window
 GtkWidget *button_up;
 GtkWidget *button_down;
@@ -65,7 +66,8 @@ GtkWidget *button_left;
 GtkWidget *button_right;
 GtkWidget *button_in;
 GtkWidget *button_out;
-GtkWidget *passo;
+GtkWidget *button_rotaciona_direita;
+GtkWidget *button_rotaciona_esquerda;
 
 //Lista de objetos graficos
 ListaEnc lista;
@@ -74,12 +76,13 @@ ListaEnc lista;
 double XvpMIN = 0;
 double YvpMIN = 0;
 double XvpMAX = 500;
-double YvpMAX = 500;
+double YvpMAX = 400;
 double xis[100];
 double ypsilon[100];
 int size;
 int pontosAdd;
 
+//----------------------------------------Controle da surface--------------------------------------------------------------
 /*Clear the surface, removing the scribbles*/
 static void clear_surface (){
   cairo_t *cr;
@@ -126,12 +129,12 @@ static void draw_linha(double a,double b,double c, double d){
     gtk_widget_queue_draw (window_widget);
  }
 
+//-----------------------------------------------Controle do display(nomes de objetos)---------------------------------------------------
  enum
 {
   COL_NAME = 0,
   NUM_COLS
 } ;
-
 static void fill_model(string n){
     
     GtkTreeIter iter;
@@ -167,6 +170,7 @@ static GtkTreeModel * create_and_fill_model (void){
      
  }
  
+//---------------------------------------------------------Transformadas de viewport--------------------------------------------------
 static double transformadaX_viewport(double Xw){
     double XwMIN = window.getXmin();
     double XwMAX = window.getXmax();
@@ -182,61 +186,83 @@ static double transformadaY_viewport(double Yw){
     double Yvp = (1-aux) * double(YvpMAX-YvpMIN);
     return Yvp;
 }
-
-
-static void draw_window(){
-    double Xmax = window.getXmax();
-    double Ymax = window.getYmax();
-    double Xmin = window.getXmin();
-    double Ymin = window.getYmin();
+//-------------------------------------------------------------Atualização da viewport-------------------------------------------------
+static void atualiza_ponto(){
+    double a;
+    double b;
     
-    draw_linha(transformadaX_viewport(Xmax),transformadaY_viewport(Ymax),transformadaX_viewport(Xmax), transformadaY_viewport(Ymin));
-    draw_linha(transformadaX_viewport(Xmax), transformadaY_viewport(Ymin),transformadaX_viewport(Xmin), transformadaY_viewport(Ymin));
-    draw_linha(transformadaX_viewport(Xmin), transformadaY_viewport(Ymin),transformadaX_viewport(Xmin), transformadaY_viewport(Ymax));
-    draw_linha(transformadaX_viewport(Xmin), transformadaY_viewport(Ymax),transformadaX_viewport(Xmax),transformadaY_viewport(Ymax));
+    //desenha os pontos
+    for(int i =0;i<lista.getsizeP();i++){
+        if(!window.getState()){
+            a = lista.getpX(i);
+            b = lista.getpY(i);
+        }
+        else{
+            a = lista.getpU(i);
+            b = lista.getpV(i);
+        }
+        if(window.clipPonto(a,b)){
+            draw_linha(transformadaX_viewport(a),transformadaY_viewport(b),transformadaX_viewport(a),transformadaY_viewport(b));
+        }
+        fill_model(lista.getNP(i));
+    } 
 }
- 
- static void atualiza_surface(){
-    clear_surface();
-    gtk_list_store_clear (store);
+
+static void atualiza_linha(){
     double a;
     double b;
     double c;
     double d;
     
-    //desenha os pontos
-    for(int i =0;i<lista.getsizeP();i++){
-        a = lista.getpX(i);
-        b = lista.getpY(i);
-        draw_linha(transformadaX_viewport(a),transformadaY_viewport(b),transformadaX_viewport(a),transformadaY_viewport(b));
-        fill_model(lista.getNP(i));
-    } 
     
     //desenha as linhas
     for(int i =0;i<lista.getsizeL();i++){
-        a = lista.getlX(i);
-        b = lista.getlY(i);
-        c = lista.getlX2(i);
-        d = lista.getlY2(i);
+        if(!window.getState()){
+            a = lista.getlX(i);
+            b = lista.getlY(i);
+            c = lista.getlX2(i);
+            d = lista.getlY2(i);
+        }
+        else{
+            a = lista.getlU(i);
+            b = lista.getlV(i);
+            c = lista.getlU2(i);
+            d = lista.getlV2(i);
+        }
         draw_linha(transformadaX_viewport(a),transformadaY_viewport(b),transformadaX_viewport(c),transformadaY_viewport(d));    
         fill_model(lista.getNL(i));
     } 
+}
+
+static void atualiza_poligono(){
+    double primeiro[2];
+    double anterior[2];
+    double atual[2];
     
     //desenha poligonos
-    
     for(int i =0;i<lista.getsizePL();i++){
+        if(!window.getState()){
+            primeiro[0] = lista.getXdoPoligono(i,0);
+            primeiro[1] = lista.getYdoPoligono(i,0);
+        }
+        else{
+            primeiro[0] = lista.getUdoPoligono(i,0);
+            primeiro[1] = lista.getVdoPoligono(i,0);
+        }
         
-        double primeiro[2];
-        primeiro[0] = lista.getXdoPoligono(i,0);
-        primeiro[1] = lista.getYdoPoligono(i,0);
-        double anterior[2];
         anterior[0] = primeiro[0];
         anterior[1] = primeiro[1];
-        double atual[2];
         
         for(int z = 1; z<lista.getSdoPoligono(i);z++){
-            atual[0] = lista.getXdoPoligono(i,z);
-            atual[1] = lista.getYdoPoligono(i,z);
+            if(!window.getState()){
+                atual[0] = lista.getXdoPoligono(i,z);
+                atual[1] = lista.getYdoPoligono(i,z);
+            }
+            else{
+                atual[0] = lista.getUdoPoligono(i,z);
+                atual[1] = lista.getVdoPoligono(i,z);
+            }
+            
             draw_linha(transformadaX_viewport(anterior[0]),transformadaY_viewport(anterior[1]),transformadaX_viewport(atual[0]),transformadaY_viewport(atual[1]));
             anterior[0] = atual[0];
             anterior[1] = atual[1];
@@ -244,11 +270,20 @@ static void draw_window(){
         draw_linha(transformadaX_viewport(anterior[0]),transformadaY_viewport(anterior[1]),transformadaX_viewport(primeiro[0]),transformadaY_viewport(primeiro[1]));
         fill_model(lista.getNdoPoligono(i));
     }
+}
+ 
+ static void atualiza_surface(){
+    clear_surface();
+    gtk_list_store_clear (store);
     
-    draw_window();
+    atualiza_ponto();
+    atualiza_linha();
+    atualiza_poligono();
+    
  }
  
 static void clear(){
+    gtk_widget_hide(window_objetos);
     lista.clearL();
     lista.clearP();
     lista.clearPL();
@@ -256,59 +291,25 @@ static void clear(){
     atualiza_surface();
 }
 
+
+//-------------------------------------------------------------------------Controle das Windows(programa)----------------------------------------------
+static void editor_de_mundo(){
+    gtk_widget_show_all(window_objetos);
+ }
+
 static void desenha(){
+    gtk_widget_hide(window_objetos);
     string n = gtk_entry_get_text (GTK_ENTRY (button_name));
     if(!lista.temObjeto(n)){
         size = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON(poligono_s));
         pontosAdd = 0;
-        gtk_widget_show_all(window_draw);
+        gtk_widget_show_all(window_desenho);
     }
     
 }
 
-static void desenha_ponto(){
-    double a = gtk_spin_button_get_value (GTK_SPIN_BUTTON(ponto_x));
-    double b = gtk_spin_button_get_value (GTK_SPIN_BUTTON(ponto_y));
-    string n = gtk_entry_get_text (GTK_ENTRY (button_name));
-    
-    lista.addP(a,b,n);
-    
-    gtk_widget_hide(window_draw);
-    atualiza_surface();
-}
-
-
- 
-static void desenha_linha(){
-    double a = gtk_spin_button_get_value (GTK_SPIN_BUTTON(linha_x));
-    double b = gtk_spin_button_get_value (GTK_SPIN_BUTTON(linha_y));
-    double c = gtk_spin_button_get_value (GTK_SPIN_BUTTON(linha_x1));
-    double d = gtk_spin_button_get_value (GTK_SPIN_BUTTON(linha_y1));
-    string n = gtk_entry_get_text (GTK_ENTRY (button_name));
-    
-    lista.addL(a,b,c,d,n);
-    
-    gtk_widget_hide(window_draw);
-    atualiza_surface();
-    
- }
-
-static void desenha_poligono(){
-    double x = gtk_spin_button_get_value (GTK_SPIN_BUTTON(poligono_x));
-    double y = gtk_spin_button_get_value (GTK_SPIN_BUTTON(poligono_y));
-    string n = gtk_entry_get_text (GTK_ENTRY (button_name));
-    
-    xis[pontosAdd] = x;
-    ypsilon[pontosAdd] = y;
-    pontosAdd+= 1;
-    
-    if(pontosAdd == size){
-        lista.addPL(size,xis,ypsilon,n);
-        gtk_widget_hide(window_draw);
-        atualiza_surface();
-    }
-} 
 static void transforma(){
+    gtk_widget_hide(window_objetos);
     string n = gtk_entry_get_text (GTK_ENTRY (button_name));
     if(lista.temObjeto(n)){
         gtk_widget_show_all(window_transformacao);
@@ -316,6 +317,8 @@ static void transforma(){
     
 }
 
+
+//-------------------------------------------------------------Métodos de transformação(multiplicação de matrizes)---------------------------------------------------------
 static double * calculoCentroGeo(){
     double somaX = 0;
     double somaY = 0;
@@ -385,7 +388,7 @@ static double * rotacao(double x,double y, double t){
     
     return r;
 }
-
+//----------------------------------------------------------------------Transformação do Objeto(translação,rotação e escalonamento)---------------------------------------------------------------------------------
 static void translada(){
     double dX = gtk_spin_button_get_value (GTK_SPIN_BUTTON(transformacao_x));
     double dY = gtk_spin_button_get_value (GTK_SPIN_BUTTON(transformacao_y));
@@ -699,6 +702,234 @@ static void rotacionaPQ(){
     
 }
 
+//------------------------------------------------------------------------------Rotacão e normalização do mundo(rotação da window)--------------------------------------------------------------------
+static void rotacionaPonto(){
+    double x;
+    double y;
+    double * aux;
+    double teta = window.getTeta();
+    
+    for(int i =0;i<lista.getsizeP();i++){
+        x = lista.getpX(i);
+        y = lista.getpY(i);
+        aux = translacao(x,y, -window.getXcentro(),-window.getYcentro());
+        aux = rotacao(*(aux),*(aux+1),teta);
+        aux = escalonamento(*(aux),*(aux+1), window.getXmax(),window.getYmax());
+        
+        
+        lista.setPSCN(*(aux),*(aux+1),i);
+        
+        
+    }
+    
+}
+static void rotacionaLinha(){
+    double a;
+    double b;
+    double c;
+    double d;
+    double * aux;
+    double teta = window.getTeta();
+    
+
+    
+    //desenha as linhas
+    for(int i =0;i<lista.getsizeL();i++){
+        a = lista.getlX(i);
+        b = lista.getlY(i);
+        aux = translacao(a,b, -window.getXcentro(),-window.getYcentro());
+        aux = rotacao(*(aux),*(aux+1),teta);
+        aux = escalonamento(*(aux),*(aux+1), window.getXmax(),window.getYmax());
+        lista.setLSCN(*(aux),*(aux+1), i);
+        
+        c = lista.getlX2(i);
+        d = lista.getlY2(i);
+        aux = translacao(c,d, -window.getXcentro(),-window.getYcentro());
+        aux = rotacao(*(aux),*(aux+1),teta);
+        aux = escalonamento(*(aux),*(aux+1), window.getXmax(),window.getYmax());
+        
+        lista.setL1SCN(*(aux),*(aux+1), i);
+    } 
+    
+}
+static void rotacionaPoligono(){
+    double x;
+    double y;
+    double * aux;
+    double teta = window.getTeta();
+    
+
+    
+    //desenha poligonos
+    
+    for(int i =0;i<lista.getsizePL();i++){
+        
+        for(int z = 1; z<lista.getSdoPoligono(i);z++){
+            x = lista.getXdoPoligono(i,z);
+            y = lista.getYdoPoligono(i,z);
+            
+            aux = translacao(x,y, -window.getXcentro(),-window.getYcentro());
+            aux = rotacao(*(aux),*(aux+1),teta);
+            aux = escalonamento(*(aux),*(aux+1), window.getXmax(),window.getYmax());
+            
+            lista.setPPoligonoSCN(*(aux),*(aux+1),i,z);
+        }
+    }
+    
+}
+
+//--------------------------------------------------------------------------Criadores de Objetos(ponto,linha,poligono)------------------------------------------------------------------------------------------------
+
+static void desenha_ponto(){
+    double a = gtk_spin_button_get_value (GTK_SPIN_BUTTON(ponto_x));
+    double b = gtk_spin_button_get_value (GTK_SPIN_BUTTON(ponto_y));
+    string n = gtk_entry_get_text (GTK_ENTRY (button_name));
+    
+    lista.addP(a,b,n);
+    if(window.getState()){
+        rotacionaPonto();
+
+    }
+    
+    gtk_widget_hide(window_desenho);
+    atualiza_surface();
+}
+
+
+ 
+static void desenha_linha(){
+    double a = gtk_spin_button_get_value (GTK_SPIN_BUTTON(linha_x));
+    double b = gtk_spin_button_get_value (GTK_SPIN_BUTTON(linha_y));
+    double c = gtk_spin_button_get_value (GTK_SPIN_BUTTON(linha_x1));
+    double d = gtk_spin_button_get_value (GTK_SPIN_BUTTON(linha_y1));
+    string n = gtk_entry_get_text (GTK_ENTRY (button_name));
+    
+    lista.addL(a,b,c,d,n);
+    if(window.getState()){
+        rotacionaLinha();
+
+    }
+    
+    gtk_widget_hide(window_desenho);
+    atualiza_surface();
+    
+ }
+
+static void desenha_poligono(){
+    double x = gtk_spin_button_get_value (GTK_SPIN_BUTTON(poligono_x));
+    double y = gtk_spin_button_get_value (GTK_SPIN_BUTTON(poligono_y));
+    string n = gtk_entry_get_text (GTK_ENTRY (button_name));
+    
+    xis[pontosAdd] = x;
+    ypsilon[pontosAdd] = y;
+    pontosAdd+= 1;
+    
+    if(pontosAdd == size){
+        lista.addPL(size,xis,ypsilon,n);
+        if(window.getState()){
+            rotacionaPoligono();
+        }
+        gtk_widget_hide(window_desenho);
+        atualiza_surface();
+    }
+} 
+
+//---------------------------------------------------------------------------------------Controle da Window(rotação,movimentação,zoom)-----------------------------------------------------------------------------------------------------
+static void rotacionaWindowEsquerda(){
+    double teta = -15;
+    window.addTeta(teta);
+    
+    double x;
+    double y;
+    double * aux;
+    
+    window.calculaCentro();
+    
+    //----------------------------------------------Rotaciona Window
+    x = window.getXmax();
+    y = window.getYmax();
+    aux = translacao(x,y, -window.getXcentro(),-window.getYcentro());
+    aux = rotacao(*(aux),*(aux+1),teta);
+    window.setMAX(*(aux),*(aux+1));
+    
+    x = window.getXmin();
+    y = window.getYmin();
+    aux = translacao(x,y, -window.getXcentro(),-window.getYcentro());
+    aux = rotacao(*(aux),*(aux+1),teta);
+    window.setMIN(*(aux),*(aux+1));
+    
+    window.rotate();
+    
+    
+    //-----------------------------------Rotaciona o Mundo
+    rotacionaPonto();
+    rotacionaLinha();
+    rotacionaPoligono();
+    
+    //-------------------------------------atualiza Surface
+    x = window.getXmax();
+    y = window.getYmax();
+    aux = translacao(x,y, window.getXcentro(),window.getYcentro());
+    window.setMAX(*(aux),*(aux+1));
+    
+    x = window.getXmin();
+    y = window.getYmin();
+    aux = translacao(x,y, window.getXcentro(),window.getYcentro());
+    window.setMIN(*(aux),*(aux+1));
+    atualiza_surface();
+ }
+
+static void rotacionaWindowDireita(){
+    double teta = 15;
+    window.addTeta(teta);
+    
+    
+    double x;
+    double y;
+    double * aux;
+    
+    window.calculaCentro();
+
+    
+    //----------------------------------------------Rotaciona Window
+    x = window.getXmax();
+    y = window.getYmax();
+    aux = translacao(x,y, -window.getXcentro(),-window.getYcentro());
+    aux = rotacao(*(aux),*(aux+1),teta);
+    window.setMAX(*(aux),*(aux+1));
+    
+    
+    x = window.getXmin();
+    y = window.getYmin();
+    aux = translacao(x,y, -window.getXcentro(),-window.getYcentro());
+    aux = rotacao(*(aux),*(aux+1),teta);
+    window.setMIN(*(aux),*(aux+1));
+    
+    window.rotate();
+    
+    
+    //-----------------------------------Rotaciona o Mundo
+    rotacionaPonto();
+    rotacionaLinha();
+    rotacionaPoligono();
+    
+    //-------------------------------------atualiza Surface
+    
+    x = window.getXmax();
+    y = window.getYmax();
+    aux = translacao(x,y, window.getXcentro(),window.getYcentro());
+    window.setMAX(*(aux),*(aux+1));
+    
+    x = window.getXmin();
+    y = window.getYmin();
+    aux = translacao(x,y, window.getXcentro(),window.getYcentro());
+    window.setMIN(*(aux),*(aux+1));
+    
+    atualiza_surface();
+    
+
+}
+
 static void move_up(){
      
     double Xmax = window.getXmax();
@@ -708,7 +939,6 @@ static void move_up(){
     
     Ymax += 10;
     Ymin += 10;
-    
     
     window.setMAX(Xmax,Ymax);
     window.setMIN(Xmin,Ymin);
@@ -726,7 +956,6 @@ static void move_down(){
     Ymax -= 10;
     Ymin -= 10;
     
-    
     window.setMAX(Xmax,Ymax);
     window.setMIN(Xmin,Ymin);
     
@@ -738,6 +967,7 @@ static void move_down(){
     double Ymax = window.getYmax();
     double Xmin = window.getXmin();
     double Ymin = window.getYmin();
+    
     
     Xmax -= 10;
     Xmin -= 10;
@@ -755,6 +985,7 @@ static void move_right(){
     double Xmin = window.getXmin();
     double Ymin = window.getYmin();
     
+    
     Xmax += 10;
     Xmin += 10;
     
@@ -766,16 +997,14 @@ static void move_right(){
  }
  
   static void zoom_in(){
-    double p = gtk_spin_button_get_value (GTK_SPIN_BUTTON(passo));
     double Xmax = window.getXmax();
     double Ymax = window.getYmax();
     double Xmin = window.getXmin();
     double Ymin = window.getYmin();
     
-    double dX = (p/100) * (Xmax-Xmin);
-    dX = dX/2;
-    double dY = (p/100) * (Ymax-Ymin);
-    dY = dY/2;
+
+    double dX = 10;
+    double dY = 10;
     
     window.setMAX(Xmax-dX,Ymax-dY);
     window.setMIN(Xmin+dX,Ymin+dY);
@@ -784,16 +1013,14 @@ static void move_right(){
  }
  
 static void zoom_out(){
-    double p = gtk_spin_button_get_value (GTK_SPIN_BUTTON(passo));
     double Xmax = window.getXmax();
     double Ymax = window.getYmax();
     double Xmin = window.getXmin();
     double Ymin = window.getYmin();
     
-    double dX = (p/100) * (Xmax-Xmin);
-    dX = dX/2;
-    double dY = (p/100) * (Ymax-Ymin);
-    dY = dY/2;
+
+    double dX = 10;
+    double dY = 10;
     
     
     window.setMAX(Xmax+dX,Ymax+dY);
@@ -803,10 +1030,11 @@ static void zoom_out(){
     
  }
  
+ 
     
 
 int main(int argc, char *argv[]){
-  window = Window(500,500,0,0);
+  window = Window(500,400,0,0);
   lista = ListaEnc();
   
   //Builder
@@ -817,11 +1045,13 @@ int main(int argc, char *argv[]){
   
   //Display
   window_widget = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "main_window") );
-  window_draw = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "window_draw") );
+  window_desenho = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "window_desenho") );
   window_transformacao = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "window_transformacao") );
+  window_objetos = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "window_objetos") );
   drawing_area = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "drawing_area") );
   display = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "display") );
   create_Model();
+  button_objetos = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "button_objetos") );
   
   
   //Botoes de desenho
@@ -847,9 +1077,10 @@ int main(int argc, char *argv[]){
   button_down = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "button_down") );
   button_left = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "button_left") );
   button_right = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "button_right") );
-  passo = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "passo") );
   button_in = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "button_in") );
   button_out = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "button_out") );
+  button_rotaciona_direita = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "button_rotaciona_direita") );
+  button_rotaciona_esquerda = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "button_rotaciona_esquerda") );
   
   //Botoes de Transformacao
   button_transformar= GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "button_transformar") );
@@ -858,8 +1089,8 @@ int main(int argc, char *argv[]){
   button_translacao= GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "button_translacao") );
   button_escalonamento= GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "button_escalonamento") );
   button_rotacao= GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "button_rotacao") );
-  button_rotacaoCObj= GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "button_rotacaoCObj") );
-  button_rotacaoPQ= GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "button_rotacaoPQ") );
+  button_rotacaoCObj = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "button_rotacaoCObj") );
+  button_rotacaoPQ = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "button_rotacaoPQ") );
   angulo = GTK_WIDGET( gtk_builder_get_object( GTK_BUILDER(gtkBuilder), "angulo") );
   
   //sinais de display
@@ -867,6 +1098,7 @@ int main(int argc, char *argv[]){
   g_signal_connect (drawing_area,"configure-event", G_CALLBACK (configure_event_cb), NULL);
   
   //sinais de desenho
+  g_signal_connect (button_objetos, "button-release-event", G_CALLBACK (editor_de_mundo),NULL);
   g_signal_connect (button_draw, "button-release-event", G_CALLBACK (desenha),NULL);
   g_signal_connect (criar_ponto, "button-release-event", G_CALLBACK (desenha_ponto),NULL);
   g_signal_connect (criar_linha, "button-release-event", G_CALLBACK (desenha_linha),NULL);
@@ -888,10 +1120,11 @@ int main(int argc, char *argv[]){
   g_signal_connect (button_right, "button-release-event", G_CALLBACK (move_right),NULL);
   g_signal_connect (button_in, "button-release-event", G_CALLBACK (zoom_in),NULL);
   g_signal_connect (button_out, "button-release-event", G_CALLBACK (zoom_out),NULL);
+  g_signal_connect (button_rotaciona_direita, "button-release-event", G_CALLBACK (rotacionaWindowDireita),NULL);
+  g_signal_connect (button_rotaciona_esquerda, "button-release-event", G_CALLBACK (rotacionaWindowEsquerda),NULL);
   
   gtk_builder_connect_signals(gtkBuilder, NULL);
   gtk_widget_show_all(window_widget);
-  draw_window();
   gtk_main ();
   
   
