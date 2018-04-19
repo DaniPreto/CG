@@ -32,6 +32,8 @@ public:
     double getYcentro();
     
     bool clipPonto(double x, double y);
+    double * cohensutherland(double x, double y, double a, double b);
+    bool* getQuadrante(double x, double y);
     
 private:
     Ponto max;
