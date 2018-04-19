@@ -18,19 +18,17 @@ public:
     virtual ~Linha();
     Linha(double a, double b, double c , double d);
     Linha(double a, double b, double c , double d, std::string n);
-    void setP1(double x , double y);
-    void setP2(double x , double y);
-    double getP1X();
-    double getP1Y();
-    double getP2X();
-    double getP2Y();
     
-    void setP1SCN(double x , double y);
-    void setP2SCN(double x , double y);
-    double getP1U();
-    double getP1V();
-    double getP2U();
-    double getP2V();
+    
+    void setP(double x , double y, bool p);
+    double getX(bool p);
+    double getY(bool p);
+
+    
+    void setSCN(double x , double y, bool p);
+    double getU(bool p);
+    double getV(bool p);
+    
 private:
     Ponto ini;
     Ponto fim;

@@ -112,7 +112,7 @@ double* Window::cohensutherland(double x, double y, double a, double b){
         resp[0] = 0;
         return resp;
     }
-    else if((rcp1[0] && rcp2[0]) || (rcp1[1] && rcp2[1])|| (rcp1[2] && rcp2[2]) || (rcp1[3] && rcp2[3])){
+    else if((rcp1[0] && rcp2[0]) || (rcp1[1] && rcp2[1]) || (rcp1[2] && rcp2[2]) || (rcp1[3] && rcp2[3])){
         resp[0] = 1;
         return resp;
     }

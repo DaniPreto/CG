@@ -43,20 +43,14 @@ public:
     std::string getNdoPoligono(int pos);
     
     //Get X e Y da linha
-    double getlX(int pos);
-    double getlY(int pos);
-    double getlX2(int pos);
-    double getlY2(int pos);
-    double getlX(std::string n);
-    double getlY(std::string n);
-    double getlX2(std::string n);
-    double getlY2(std::string n);
+    double getlX(int pos,bool p);
+    double getlY(int pos,bool p);
+    double getlX(std::string n,bool p);
+    double getlY(std::string n,bool p);
     
     //Get X e Y da linha SCN
-    double getlU(int pos);
-    double getlV(int pos);
-    double getlU2(int pos);
-    double getlV2(int pos);
+    double getlU(int pos, bool p);
+    double getlV(int pos,bool p);
     
     //Get tamanho da lista
     int getsizeL();
@@ -83,16 +77,13 @@ public:
     //Set objetos
     void setP(double x,double y, int pos);
     void setP(double x,double y, std::string n);
-    void setL(double x,double y, int pos);
-    void setL1(double x,double y, int pos);
-    void setL(double x,double y, std::string n);
-    void setL1(double x,double y, std::string n);
+    void setL(double x,double y, int pos, bool p);
+    void setL(double x,double y, std::string n, bool p);
     void setPPoligono(double x,double y,std::string n, int pos);
     
     //Set objetos SCN
     void setPSCN(double x,double y, int pos);
-    void setLSCN(double x,double y, int pos);
-    void setL1SCN(double x,double y, int pos);
+    void setLSCN(double x,double y, int pos, bool i);
     void setPPoligonoSCN(double x,double y,int n, int pos);
     
     

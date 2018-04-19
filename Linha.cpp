@@ -25,51 +25,65 @@ Linha::Linha(double a, double b, double c , double d,std::string n){
     nome = n;
 }
 
-void Linha::setP1(double x , double y){
-    Ponto p(x,y);
-    ini = p;
-}
-void Linha::setP2(double x , double y){
-    Ponto p(x,y);
-    fim = p;
-}
-double Linha::getP1X(){
-    return ini.getX();
+void Linha::setP(double x , double y, bool p){
+    if(p){
+        Ponto p(x,y);
+        ini = p;
+    }
+    else{
+        Ponto p(x,y);
+        fim = p;
+    }
 }	 	  	     	  	      	     	 	    	        	 	
-double Linha::getP1Y(){
-    return ini.getY();
+
+double Linha::getX(bool p){
+    if(p)
+        return ini.getX();
+    else
+        return fim.getX();
 }
 
-double Linha::getP2X(){
-    return fim.getX();
+double Linha::getY(bool p){
+    if(p)
+        return ini.getY();
+    else
+        return fim.getY();
 }
 
-double Linha::getP2Y(){
-    return fim.getY();
-}
 
 
-//----------------------------------------------------------------------PPT
+//----------------------------------------------------------------------SCN
 
-void Linha::setP1SCN(double x , double y){
-    ini.setU(x);
-    ini.setV(y);
+void Linha::setSCN(double x , double y, bool p){
+    if(p){
+        ini.setU(x);
+        ini.setV(y);
+    }
+    else{
+        fim.setU(x);
+        fim.setV(y);
+    }
 }
-void Linha::setP2SCN(double x , double y){
-    fim.setU(x);
-    fim.setV(y);
-}
-double Linha::getP1U(){
-    return ini.getU();
+
+double Linha::getU(bool p){
+    if(p)
+        return ini.getU();
+    else
+        return fim.getU();
 }	 	  	     	  	      	     	 	    	        	 	
-double Linha::getP1V(){
-    return ini.getV();
+
+double Linha::getV(bool p){
+    if(p)
+        return ini.getV();
+    else
+        return fim.getV();
 }
 
-double Linha::getP2U(){
-    return fim.getU();
-}
 
-double Linha::getP2V(){
-    return fim.getV();
-}
+
+
+
+
+
+
+

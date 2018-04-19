@@ -218,16 +218,16 @@ static void atualiza_linha(){
     //desenha as linhas
     for(int i =0;i<lista.getsizeL();i++){
         if(!window.getState()){
-            a = lista.getlX(i);
-            b = lista.getlY(i);
-            c = lista.getlX2(i);
-            d = lista.getlY2(i);
+            a = lista.getlX(i,true);
+            b = lista.getlY(i,true);
+            c = lista.getlX(i,false);
+            d = lista.getlY(i,false);
         }
         else{
-            a = lista.getlU(i);
-            b = lista.getlV(i);
-            c = lista.getlU2(i);
-            d = lista.getlV2(i);
+            a = lista.getlU(i,true);
+            b = lista.getlV(i,true);
+            c = lista.getlU(i,false);
+            d = lista.getlV(i,false);
         }
         draw_linha(transformadaX_viewport(a),transformadaY_viewport(b),transformadaX_viewport(c),transformadaY_viewport(d));    
         fill_model(lista.getNL(i));
@@ -411,15 +411,15 @@ static void translada(){
         
     }
     else if(type == 1){
-        x = lista.getlX(n);
-        y = lista.getlY(n);
+        x = lista.getlX(n,true);
+        y = lista.getlY(n,true);
         aux = translacao(x,y, dX,dY);
-        lista.setL(*(aux),*(aux+1), n);
+        lista.setL(*(aux),*(aux+1), n,true);
         
-        a = lista.getlX2(n);
-        b = lista.getlY2(n);
+        a = lista.getlX(n,false);
+        b = lista.getlY(n,false);
         aux = translacao(a,b, dX,dY);
-        lista.setL1(*(aux),*(aux+1), n);
+        lista.setL(*(aux),*(aux+1), n,false);
         
         gtk_widget_hide(window_transformacao);
         atualiza_surface();
@@ -465,10 +465,10 @@ static void escalona(){
         
     }
     else if(type == 1){
-        x = lista.getlX(n);
-        y = lista.getlY(n);
-        a = lista.getlX2(n);
-        b = lista.getlY2(n);
+        x = lista.getlX(n,true);
+        y = lista.getlY(n,true);
+        a = lista.getlX(n,false);
+        b = lista.getlY(n,false);
         
         xis[0] = x;
         ypsilon[0] = y;
@@ -480,12 +480,12 @@ static void escalona(){
         aux = translacao(x,y, -*(centro),-*(centro+1));
         aux = escalonamento(*(aux),*(aux+1),sX,sY);
         aux = translacao(*(aux),*(aux+1), *(centro),*(centro+1));
-        lista.setL(*(aux),*(aux+1), n);
+        lista.setL(*(aux),*(aux+1), n,true);
         
         aux = translacao(a,b, -*(centro),-*(centro+1));
         aux = escalonamento(*(aux),*(aux+1),sX,sY);
         aux = translacao(*(aux),*(aux+1), *(centro),*(centro+1));
-        lista.setL1(*(aux),*(aux+1), n);
+        lista.setL(*(aux),*(aux+1), n,false);
         
         gtk_widget_hide(window_transformacao);
         atualiza_surface();
@@ -540,15 +540,15 @@ static void rotaciona(){
         
     }
     else if(type == 1){
-        x = lista.getlX(n);
-        y = lista.getlY(n);
+        x = lista.getlX(n,true);
+        y = lista.getlY(n,true);
         aux = rotacao(x,y,teta);
-        lista.setL(*(aux),*(aux+1), n);
+        lista.setL(*(aux),*(aux+1), n,true);
         
-        a = lista.getlX2(n);
-        b = lista.getlY2(n);
+        a = lista.getlX(n,false);
+        b = lista.getlY(n,false);
         aux = rotacao(a,b,teta);
-        lista.setL1(*(aux),*(aux+1), n);
+        lista.setL(*(aux),*(aux+1), n,false);
         
         gtk_widget_hide(window_transformacao);
         atualiza_surface();
@@ -585,10 +585,10 @@ static void rotacionaCObj(){
         
     }
     else if(type == 1){
-        x = lista.getlX(n);
-        y = lista.getlY(n);
-        a = lista.getlX2(n);
-        b = lista.getlY2(n);
+        x = lista.getlX(n,true);
+        y = lista.getlY(n,true);
+        a = lista.getlX(n,false);
+        b = lista.getlY(n,false);
         
         xis[0] = x;
         ypsilon[0] = y;
@@ -600,12 +600,12 @@ static void rotacionaCObj(){
         aux = translacao(x,y, -*(centro),-*(centro+1));
         aux = rotacao(*(aux),*(aux+1),teta);
         aux = translacao(*(aux),*(aux+1), *(centro),*(centro+1));
-        lista.setL(*(aux),*(aux+1), n);
+        lista.setL(*(aux),*(aux+1), n,true);
         
         aux = translacao(a,b, -*(centro),-*(centro+1));
         aux = rotacao(*(aux),*(aux+1),teta);
         aux = translacao(*(aux),*(aux+1), *(centro),*(centro+1));
-        lista.setL1(*(aux),*(aux+1), n);
+        lista.setL(*(aux),*(aux+1), n,false);
         
         gtk_widget_hide(window_transformacao);
         atualiza_surface();
@@ -664,20 +664,20 @@ static void rotacionaPQ(){
         
     }
     else if(type == 1){
-        x = lista.getlX(n);
-        y = lista.getlY(n);
-        a = lista.getlX2(n);
-        b = lista.getlY2(n);
+        x = lista.getlX(n,true);
+        y = lista.getlY(n,true);
+        a = lista.getlX(n,false);
+        b = lista.getlY(n,false);
         
         aux = translacao(x,y, -pX,-pY);
         aux = rotacao(*(aux),*(aux+1),teta);
         aux = translacao(*(aux),*(aux+1), pX,pY);
-        lista.setL(*(aux),*(aux+1), n);
+        lista.setL(*(aux),*(aux+1), n,true);
         
         aux = translacao(a,b, -pX,-pY);
         aux = rotacao(*(aux),*(aux+1),teta);
         aux = translacao(*(aux),*(aux+1),pX,pY);
-        lista.setL1(*(aux),*(aux+1), n);
+        lista.setL(*(aux),*(aux+1), n,false);
         
         gtk_widget_hide(window_transformacao);
         atualiza_surface();
@@ -735,20 +735,20 @@ static void rotacionaLinha(){
     
     //desenha as linhas
     for(int i =0;i<lista.getsizeL();i++){
-        a = lista.getlX(i);
-        b = lista.getlY(i);
+        a = lista.getlX(i,true);
+        b = lista.getlY(i,true);
         aux = translacao(a,b, -window.getXcentro(),-window.getYcentro());
         aux = rotacao(*(aux),*(aux+1),teta);
         aux = escalonamento(*(aux),*(aux+1), window.getXmax(),window.getYmax());
-        lista.setLSCN(*(aux),*(aux+1), i);
+        lista.setLSCN(*(aux),*(aux+1), i,true);
         
-        c = lista.getlX2(i);
-        d = lista.getlY2(i);
+        c = lista.getlX(i,false);
+        d = lista.getlY(i,false);
         aux = translacao(c,d, -window.getXcentro(),-window.getYcentro());
         aux = rotacao(*(aux),*(aux+1),teta);
         aux = escalonamento(*(aux),*(aux+1), window.getXmax(),window.getYmax());
         
-        lista.setL1SCN(*(aux),*(aux+1), i);
+        lista.setLSCN(*(aux),*(aux+1), i,false);
     } 
     
 }
@@ -845,7 +845,7 @@ static void rotacionaWindowEsquerda(){
     
     window.calculaCentro();
     
-    //----------------------------------------------Rotaciona Window
+    /*----------------------------------------------Rotaciona Window
     x = window.getXmax();
     y = window.getYmax();
     aux = translacao(x,y, -window.getXcentro(),-window.getYcentro());
@@ -857,16 +857,15 @@ static void rotacionaWindowEsquerda(){
     aux = translacao(x,y, -window.getXcentro(),-window.getYcentro());
     aux = rotacao(*(aux),*(aux+1),teta);
     window.setMIN(*(aux),*(aux+1));
-    
+    */
     window.rotate();
-    
     
     //-----------------------------------Rotaciona o Mundo
     rotacionaPonto();
     rotacionaLinha();
     rotacionaPoligono();
     
-    //-------------------------------------atualiza Surface
+    /*/-------------------------------------atualiza Surface
     x = window.getXmax();
     y = window.getYmax();
     aux = translacao(x,y, window.getXcentro(),window.getYcentro());
@@ -875,7 +874,8 @@ static void rotacionaWindowEsquerda(){
     x = window.getXmin();
     y = window.getYmin();
     aux = translacao(x,y, window.getXcentro(),window.getYcentro());
-    window.setMIN(*(aux),*(aux+1));
+    window.setMIN(*(aux),*(aux+1));*/
+    
     atualiza_surface();
  }
 
@@ -891,7 +891,7 @@ static void rotacionaWindowDireita(){
     window.calculaCentro();
 
     
-    //----------------------------------------------Rotaciona Window
+    /*/----------------------------------------------Rotaciona Window
     x = window.getXmax();
     y = window.getYmax();
     aux = translacao(x,y, -window.getXcentro(),-window.getYcentro());
@@ -904,7 +904,7 @@ static void rotacionaWindowDireita(){
     aux = translacao(x,y, -window.getXcentro(),-window.getYcentro());
     aux = rotacao(*(aux),*(aux+1),teta);
     window.setMIN(*(aux),*(aux+1));
-    
+    */
     window.rotate();
     
     
@@ -913,7 +913,7 @@ static void rotacionaWindowDireita(){
     rotacionaLinha();
     rotacionaPoligono();
     
-    //-------------------------------------atualiza Surface
+    /*/-------------------------------------atualiza Surface
     
     x = window.getXmax();
     y = window.getYmax();
@@ -924,7 +924,7 @@ static void rotacionaWindowDireita(){
     y = window.getYmin();
     aux = translacao(x,y, window.getXcentro(),window.getYcentro());
     window.setMIN(*(aux),*(aux+1));
-    
+    */
     atualiza_surface();
     
 

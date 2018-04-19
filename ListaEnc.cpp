@@ -151,78 +151,47 @@ void ListaEnc::addL(double a, double b,double c, double d, std::string n){
     
 }
 
-double ListaEnc::getlX(int pos){
-    double x = linhas[pos].getP1X();
+double ListaEnc::getlX(int pos, bool p){
+    double x;
+    x = linhas[pos].getX(p);
     return x;
 }
-double ListaEnc::getlY(int pos){
-    double y = linhas[pos].getP1Y();
+
+double ListaEnc::getlY(int pos,bool p){
+    double y;
+    y = linhas[pos].getY(p);
+    
     return y;
 }
-double ListaEnc::getlX2(int pos){
-    double x = linhas[pos].getP2X();
-    return x;
-}
-double ListaEnc::getlY2(int pos){
-    double y = linhas[pos].getP2Y();
-    return y;
-}
-double ListaEnc::getlX(std::string n){
+
+double ListaEnc::getlX(std::string n, bool p){
     double x;
     for(int i = 0; i<sizeL; i++){
         if(n == linhas[i].getNome()){
-            x = linhas[i].getP1X();
+            x = linhas[i].getX(p);
             return x;
         }
     }
 }
-double ListaEnc::getlY(std::string n){
+double ListaEnc::getlY(std::string n,bool p){
     double y;
     for(int i = 0; i<sizeL; i++){
         if(n == linhas[i].getNome()){
-            y = linhas[i].getP1Y();
-            return y;
-        }
-    }
-}
-double ListaEnc::getlX2(std::string n){
-    double x;
-    for(int i = 0; i<sizeL; i++){
-        if(n == linhas[i].getNome()){
-            x = linhas[i].getP2X();
-            return x;
-        }
-    }
-}
-double ListaEnc::getlY2(std::string n){
-    double y;
-    for(int i = 0; i<sizeL; i++){
-        if(n == linhas[i].getNome()){
-            y = linhas[i].getP2Y();
+            y = linhas[i].getY(p);
             return y;
         }
     }
 }
 
 
-void ListaEnc::setL(double x,double y, int pos){
-    linhas[pos].setP1(x,y);
-}
-void ListaEnc::setL1(double x,double y, int pos){
-    linhas[pos].setP2(x,y);
+void ListaEnc::setL(double x,double y, int pos,bool p){
+    linhas[pos].setP(x,y,p);
 }
 
-void ListaEnc::setL(double x,double y, std::string n){
+void ListaEnc::setL(double x,double y, std::string n,bool p){
     for(int i = 0; i<sizeL; i++){
         if(n == linhas[i].getNome()){
-            linhas[i].setP1(x,y);
-        }
-    }
-}
-void ListaEnc::setL1(double x,double y, std::string n){
-    for(int i = 0; i<sizeL; i++){
-        if(n == linhas[i].getNome()){
-            linhas[i].setP2(x,y);
+            linhas[i].setP(x,y,p);
         }
     }
 }
@@ -231,27 +200,16 @@ void ListaEnc::clearL(){
     sizeL = 0;
 }
 
-void ListaEnc::setLSCN(double x,double y, int pos){
-    linhas[pos].setP1SCN(x,y);
-}
-void ListaEnc::setL1SCN(double x,double y, int pos){
-    linhas[pos].setP2SCN(x,y);
+void ListaEnc::setLSCN(double x,double y, int pos,bool p){
+    linhas[pos].setSCN(x,y,p);
 }
 
-double ListaEnc::getlU(int pos){
-    double x = linhas[pos].getP1U();
+double ListaEnc::getlU(int pos,bool p){
+    double x = linhas[pos].getU(p);
     return x;
 }
-double ListaEnc::getlV(int pos){
-    double y = linhas[pos].getP1V();
-    return y;
-}
-double ListaEnc::getlU2(int pos){
-    double x = linhas[pos].getP2U();
-    return x;
-}
-double ListaEnc::getlV2(int pos){
-    double y = linhas[pos].getP2V();
+double ListaEnc::getlV(int pos,bool p){
+    double y = linhas[pos].getV(p);
     return y;
 }
 
