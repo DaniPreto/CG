@@ -32,8 +32,13 @@ public:
     double getYcentro();
     
     bool clipPonto(double x, double y);
-    double * cohensutherland(double x, double y, double a, double b);
+    double* cohenSutherland(double x, double y, double a, double b);
     bool* getQuadrante(double x, double y);
+    
+    double* liangBarsky(double x, double y, double a, double b);
+    double max_min(double* dados, int index,bool status);
+    
+    Ponto* weilerAtherton(Ponto* pontos,int sizePoligono);
     
 private:
     Ponto max;
