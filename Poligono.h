@@ -16,6 +16,8 @@ public:
     Poligono(int size, std::string n);
     Poligono(const Poligono& orig);
     virtual ~Poligono();
+    
+    
     int getSize();
     void addP(double x, double y);
     void setP(double x, double y, int a);
@@ -25,7 +27,8 @@ public:
     void setPSCN(double x, double y, int a);
     double getU(int pos);
     double getV(int pos);
-
+    
+    Ponto* getPontos();
 private:
     Ponto pontos[100];
     int numeroPontos;

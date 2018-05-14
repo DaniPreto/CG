@@ -315,7 +315,7 @@ Ponto* Window::weilerAtherton(Ponto* pontos,int sizePoligono){
     double* resp;
     
     Ponto* aux;
-    int auxI = 0;
+    int auxI = 1;
     
     for(int i = 0; i < sizePoligono - 1; i++ ){
         resp = cohenSutherland(pontos[i].getX(),pontos[i].getY(), pontos[i+1].getX(),pontos[i+1].getY());
@@ -334,6 +334,7 @@ Ponto* Window::weilerAtherton(Ponto* pontos,int sizePoligono){
         aux[auxI] = Ponto(resp[3],resp[4]);
         auxI++;
     }
+    aux[0] = Ponto(auxI,auxI);
     
     return aux;
     

@@ -67,6 +67,10 @@ double Poligono::getV(int pos){
     }
 }
 
+Ponto* Poligono::getPontos(){
+    return pontos;
+}
+
 
 
 

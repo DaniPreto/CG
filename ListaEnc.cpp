@@ -6,6 +6,7 @@ ListaEnc::ListaEnc() {
     sizeL=0;
     sizeP=0;
     sizePL = 0;
+    sizeC = 0;
 }
 
 ListaEnc::ListaEnc(const ListaEnc& orig) {
@@ -50,7 +51,7 @@ int ListaEnc::getType(std::string n){
 }
 
 bool ListaEnc::isEmpty(){
-    if(sizeP > 0 || sizeL > 0 || sizePL > 0){
+    if(sizeP > 0 || sizeL > 0 || sizePL > 0 || sizeC > 0){
         return false;
     }
     return true;
@@ -303,6 +304,90 @@ double ListaEnc::getVdoPoligono(int pos,int a){
     return y;
 }
 
+Ponto* ListaEnc::getPontosPoligono(int pos){
+    return poligonos[pos].getPontos();
+}
+
+
+
+
+
+//------------------------------------------------------------------------Curva
+int ListaEnc::getsizeC(){
+    return sizeC;
+}
+
+std::string ListaEnc::getNCurva(int pos){
+    return curvas[pos].getNome();
+}
+
+int ListaEnc::getSCurva(int pos){
+    int s = curvas[pos].getSize();
+    return s;
+}
+
+int ListaEnc::getSCurva(std::string n){
+    
+    int r;
+    for(int i = 0; i<sizeC; i++){
+        if(n == curvas[i].getNome()){
+            r = curvas[i].getSize();
+            return r;
+        }
+    }
+}
+
+void ListaEnc::addC(double*x,double*y, std::string n, int size){
+    
+
+    curvas[sizeC] = Curva(x,y,n,size);
+    sizeC += 1;
+}
+
+double ListaEnc::getXCurva(int pos,int a){
+    double x = curvas[pos].getX(a);
+    return x;
+}
+
+double ListaEnc::getYCurva(int pos,int a){
+    double y = curvas[pos].getY(a);
+    return y;
+}
+
+double ListaEnc::getXCurva(std::string n,int a){
+    double r;
+    for(int i = 0; i<sizeC; i++){
+        if(n == curvas[i].getNome()){
+            r = curvas[i].getX(a);
+            return r;
+        }
+    }
+}
+
+double ListaEnc::getYCurva(std::string n,int a){
+    double r;
+    for(int i = 0; i<sizeC; i++){
+        if(n == curvas[i].getNome()){
+            r = curvas[i].getY(a);
+            return r;
+        }
+    }
+}
+
+
+void ListaEnc::clearC(){
+    sizeC = 0;
+}
+
+double ListaEnc::getUCurva(int pos,int a){
+    double x = curvas[pos].getU(a);
+    return x;
+}
+
+double ListaEnc::getVCurva(int pos,int a){
+    double y = curvas[pos].getV(a);
+    return y;
+}
 
 
 

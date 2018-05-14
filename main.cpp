@@ -213,7 +213,7 @@ static void atualiza_linha(){
     double b;
     double c;
     double d;
-    
+    double * aux;
     
     //desenha as linhas
     for(int i =0;i<lista.getsizeL();i++){
@@ -222,53 +222,97 @@ static void atualiza_linha(){
             b = lista.getlY(i,true);
             c = lista.getlX(i,false);
             d = lista.getlY(i,false);
+            
         }
         else{
             a = lista.getlU(i,true);
             b = lista.getlV(i,true);
             c = lista.getlU(i,false);
             d = lista.getlV(i,false);
+       
         }
-        draw_linha(transformadaX_viewport(a),transformadaY_viewport(b),transformadaX_viewport(c),transformadaY_viewport(d));    
+        
+        aux = window.liangBarsky(a,b, c, d);
+        if(aux[0] != 1)
+            draw_linha(transformadaX_viewport(aux[1]),transformadaY_viewport(aux[2]),transformadaX_viewport(aux[3]),transformadaY_viewport(aux[4]));
+            
         fill_model(lista.getNL(i));
     } 
 }
 
 static void atualiza_poligono(){
-    double primeiro[2];
     double anterior[2];
     double atual[2];
     
+    int sizeP;
+    Ponto* pontos;
+    
     //desenha poligonos
     for(int i =0;i<lista.getsizePL();i++){
-        if(!window.getState()){
-            primeiro[0] = lista.getXdoPoligono(i,0);
-            primeiro[1] = lista.getYdoPoligono(i,0);
-        }
-        else{
-            primeiro[0] = lista.getUdoPoligono(i,0);
-            primeiro[1] = lista.getVdoPoligono(i,0);
-        }
+        pontos = lista.getPontosPoligono(i);
+        sizeP = lista.getSdoPoligono(i);
         
-        anterior[0] = primeiro[0];
-        anterior[1] = primeiro[1];
+        pontos = window.weilerAtherton(pontos,sizeP);
         
-        for(int z = 1; z<lista.getSdoPoligono(i);z++){
+        if (pontos[0].getX() > 1){
             if(!window.getState()){
-                atual[0] = lista.getXdoPoligono(i,z);
-                atual[1] = lista.getYdoPoligono(i,z);
+                anterior[0] = pontos[1].getX();
+                anterior[1] = pontos[1].getY();
             }
             else{
-                atual[0] = lista.getUdoPoligono(i,z);
-                atual[1] = lista.getVdoPoligono(i,z);
+                anterior[0] = pontos[1].getU();
+                anterior[1] = pontos[1].getV();
             }
+        
+    
+            for(int z = 2; z<sizeP;z++){
+                if(!window.getState()){
+                    atual[0] = pontos[z].getX();
+                    atual[1] = pontos[z].getY();
+                }
+                else{
+                    atual[0] = pontos[z].getU();
+                    atual[1] = pontos[z].getV();
+                }
             
+                draw_linha(transformadaX_viewport(anterior[0]),transformadaY_viewport(anterior[1]),transformadaX_viewport(atual[0]),transformadaY_viewport(atual[1]));
+                anterior[0] = atual[0];
+                anterior[1] = atual[1];
+            }
+        }
+        fill_model(lista.getNdoPoligono(i));
+    }
+}
+
+static void atualiza_curva(){
+    double anterior[2];
+    double atual[2];
+    
+    int numC = 0;
+    double t2 = 0;
+    double t3 = 0;
+    
+
+    
+    for(int i = 1;i<lista.getsizeC();i++){
+        
+        numC = ((lista.getSCurva(i) - 4)/3)+1;
+        anterior[0] = lista.getXCurva(i,0);
+        anterior[1] = lista.getYCurva(i,0);
+        
+        for(double t=0; t<1;t = t + 0.02){
+            t2 = t * t;
+            t3 = t2 *t;
+            
+            atual[0] = (-t3 +3*t2 -3*t +1) * lista.getXCurva(i,0) + (3*t3 -6*t2 +3*t)*lista.getXCurva(i,1) + (-3*t3 +3*t2)*lista.getXCurva(i,2) + (t3)*lista.getXCurva(i,3);
+            atual[1] = (-t3 +3*t2 -3*t +1)*lista.getYCurva(i,0) + (3*t3 -6*t2 +3*t)*lista.getYCurva(i,1) + (-3*t3 +3*t2)*lista.getYCurva(i,2) + (t3)*lista.getYCurva(i,3);
+
             draw_linha(transformadaX_viewport(anterior[0]),transformadaY_viewport(anterior[1]),transformadaX_viewport(atual[0]),transformadaY_viewport(atual[1]));
+            
             anterior[0] = atual[0];
             anterior[1] = atual[1];
         }
-        draw_linha(transformadaX_viewport(anterior[0]),transformadaY_viewport(anterior[1]),transformadaX_viewport(primeiro[0]),transformadaY_viewport(primeiro[1]));
-        fill_model(lista.getNdoPoligono(i));
+        fill_model(lista.getNCurva(i));
     }
 }
  
@@ -279,6 +323,7 @@ static void atualiza_poligono(){
     atualiza_ponto();
     atualiza_linha();
     atualiza_poligono();
+    atualiza_curva();
     
  }
  
@@ -287,6 +332,7 @@ static void clear(){
     lista.clearL();
     lista.clearP();
     lista.clearPL();
+    lista.clearC();
     
     atualiza_surface();
 }
@@ -304,6 +350,18 @@ static void desenha(){
         size = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON(poligono_s));
         pontosAdd = 0;
         gtk_widget_show_all(window_desenho);
+    }
+    
+}
+
+static void desenha_curva(){
+    gtk_widget_hide(window_objetos);
+    string n = gtk_entry_get_text (GTK_ENTRY (button_name));
+    if(!lista.temObjeto(n)){
+        size = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON(curva_s));
+        size = size * 4;
+        pontosAdd = 0;
+        gtk_widget_show_all(window_curva);
     }
     
 }
@@ -832,7 +890,25 @@ static void desenha_poligono(){
         gtk_widget_hide(window_desenho);
         atualiza_surface();
     }
-} 
+}
+
+static void desenha_curva(){
+    double x = gtk_spin_button_get_value (GTK_SPIN_BUTTON(curva_x));
+    double y = gtk_spin_button_get_value (GTK_SPIN_BUTTON(curva_y));
+    string n = gtk_entry_get_text (GTK_ENTRY (button_name));
+    
+    xis[pontosAdd] = x;
+    ypsilon[pontosAdd] = y;
+    pontosAdd+= 1;
+    
+    if(pontosAdd == size){
+        lista.addC(xis,ypsilon,n,size);
+        
+        gtk_widget_hide(window_curva);
+        atualiza_surface();
+    }
+    
+}
 
 //---------------------------------------------------------------------------------------Controle da Window(rotação,movimentação,zoom)-----------------------------------------------------------------------------------------------------
 static void rotacionaWindowEsquerda(){
