@@ -30,6 +30,10 @@ bool ListaEnc::temObjeto(std::string n){
         if(n == poligonos[i].getNome())
            return true;
     }
+    for(int i = 0; i<sizeC; i++){
+        if(n == curvas[i].getNome())
+           return true;
+    }
     return false;
 }
 
@@ -47,7 +51,7 @@ int ListaEnc::getType(std::string n){
         if(n == poligonos[i].getNome())
            return 2;
     }
-    return 0;
+    return 3;
 }
 
 bool ListaEnc::isEmpty(){
@@ -338,8 +342,6 @@ int ListaEnc::getSCurva(std::string n){
 }
 
 void ListaEnc::addC(double*x,double*y, std::string n, int size){
-    
-
     curvas[sizeC] = Curva(x,y,n,size);
     sizeC += 1;
 }
