@@ -29,9 +29,11 @@ public:
     double getU(bool p);
     double getV(bool p);
     
+    
 private:
     Ponto ini;
     Ponto fim;
+    
     
 };
 

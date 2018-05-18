@@ -2,7 +2,8 @@
 #include "Poligono.h"
 
 Poligono::Poligono(){
-
+    numeroPontos = 0;
+    posicao = 0;
 }
 Poligono::Poligono(int size, std::string n) {
     numeroPontos = size;
@@ -17,6 +18,10 @@ Poligono::~Poligono() {
 }
 int Poligono::getSize(){
     return numeroPontos;
+}
+
+void Poligono::setSize(int size){
+    numeroPontos = size;
 }
 
 void Poligono::addP(double x, double y){

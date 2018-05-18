@@ -28,30 +28,30 @@ public:
     int getType(std::string n);
     
     //Get X e Y do ponto
-    double getpX(int pos);
-    double getpY(int pos);
-    double getpX(std::string n);
-    double getpY(std::string n);
+    double getXP(int pos);
+    double getYP(int pos);
+    double getXP(std::string n);
+    double getYP(std::string n);
     
     //Get X e Y do ponto SCN
-    double getpU(int pos);
-    double getpV(int pos);
+    double getUP(int pos);
+    double getVP(int pos);
     
     
     //Get nome do objeto
     std::string getNP(int pos);
     std::string getNL(int pos);
-    std::string getNdoPoligono(int pos);
+    std::string getNPL(int pos);
     
     //Get X e Y da linha
-    double getlX(int pos,bool p);
-    double getlY(int pos,bool p);
-    double getlX(std::string n,bool p);
-    double getlY(std::string n,bool p);
+    double getXL(int pos,bool p);
+    double getYL(int pos,bool p);
+    double getXL(std::string n,bool p);
+    double getYL(std::string n,bool p);
     
     //Get X e Y da linha SCN
-    double getlU(int pos, bool p);
-    double getlV(int pos,bool p);
+    double getUL(int pos, bool p);
+    double getVL(int pos,bool p);
     
     //Get tamanho da lista
     int getsizeL();
@@ -59,17 +59,17 @@ public:
     int getsizePL();
     
     //Get poligono
-    int getSdoPoligono(int pos);
-    int getSdoPoligono(std::string n);
-    double getXdoPoligono(int pos,int a);
-    double getYdoPoligono(int pos,int a);
-    double getXdoPoligono(std::string n,int a);
-    double getYdoPoligono(std::string n,int a);
-    Ponto* getPontosPoligono(int pos);
+    int getSPL(int pos);
+    int getSPL(std::string n);
+    double getXPL(int pos,int a);
+    double getYPL(int pos,int a);
+    double getXPL(std::string n,int a);
+    double getYPL(std::string n,int a);
+    
     
     //Get poligono SCN
-    double getUdoPoligono(int pos,int a);
-    double getVdoPoligono(int pos,int a);
+    double getUPL(int pos,int a);
+    double getVPL(int pos,int a);
     
     //Clear lista
     void clearL();
@@ -81,27 +81,27 @@ public:
     void setP(double x,double y, std::string n);
     void setL(double x,double y, int pos, bool p);
     void setL(double x,double y, std::string n, bool p);
-    void setPPoligono(double x,double y,std::string n, int pos);
+    void setPL(double x,double y,std::string n, int pos);
     
     //Set objetos SCN
     void setPSCN(double x,double y, int pos);
     void setLSCN(double x,double y, int pos, bool i);
-    void setPPoligonoSCN(double x,double y,int n, int pos);
+    void setPLSCN(double x,double y,int n, int pos);
     
     //Curva
     int getsizeC();
-    std::string getNCurva(int pos);
-    int getSCurva(int pos);
-    int getSCurva(std::string n);
-    void addC(double*x,double*y, std::string n, int size);
-    double getXCurva(int pos,int a);
-    double getYCurva(int pos,int a);
-    double getXCurva(std::string n,int a);
-    double getYCurva(std::string n,int a);
+    std::string getNC(int pos);
+    int getSC(int pos);
+    int getSC(std::string n);
+    void addC(double*x,double*y, std::string n, int size,bool t);
+    double getXC(int pos,int a);
+    double getYC(int pos,int a);
+    double getXC(std::string n,int a);
+    double getYC(std::string n,int a);
 
     void clearC();
-    double getUCurva(int pos,int a);
-    double getVCurva(int pos,int a);
+    double getUC(int pos,int a);
+    double getVC(int pos,int a);
 
     
     

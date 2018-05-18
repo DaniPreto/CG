@@ -79,17 +79,17 @@ void ListaEnc::addP(double x, double y,std::string n){
 
 }	 	  	     	  	      	     	 	    	        	 	
     
-double ListaEnc::getpX(int pos){
+double ListaEnc::getXP(int pos){
     double x = pontos[pos].getX();
     return x;
 }
 
-double ListaEnc::getpY(int pos){
+double ListaEnc::getYP(int pos){
     double y = pontos[pos].getY();
     return y;
 }
 
-double ListaEnc::getpX(std::string n){
+double ListaEnc::getXP(std::string n){
     double x;
     for(int i = 0; i<sizeP; i++){
         if(n == pontos[i].getNome())
@@ -98,7 +98,7 @@ double ListaEnc::getpX(std::string n){
     }
 }
 
-double ListaEnc::getpY(std::string n){
+double ListaEnc::getYP(std::string n){
     double y;
     for(int i = 0; i<sizeP; i++){
         if(n == pontos[i].getNome())
@@ -131,12 +131,12 @@ void ListaEnc::setPSCN(double x,double y, int pos){
     pontos[pos].setV(y);
 }
 
-double ListaEnc::getpU(int pos){
+double ListaEnc::getUP(int pos){
     double x = pontos[pos].getU();
     return x;
 }
 
-double ListaEnc::getpV(int pos){
+double ListaEnc::getVP(int pos){
     double y = pontos[pos].getV();
     return y;
 }
@@ -156,20 +156,20 @@ void ListaEnc::addL(double a, double b,double c, double d, std::string n){
     
 }
 
-double ListaEnc::getlX(int pos, bool p){
+double ListaEnc::getXL(int pos, bool p){
     double x;
     x = linhas[pos].getX(p);
     return x;
 }
 
-double ListaEnc::getlY(int pos,bool p){
+double ListaEnc::getYL(int pos,bool p){
     double y;
     y = linhas[pos].getY(p);
     
     return y;
 }
 
-double ListaEnc::getlX(std::string n, bool p){
+double ListaEnc::getXL(std::string n, bool p){
     double x;
     for(int i = 0; i<sizeL; i++){
         if(n == linhas[i].getNome()){
@@ -178,7 +178,7 @@ double ListaEnc::getlX(std::string n, bool p){
         }
     }
 }
-double ListaEnc::getlY(std::string n,bool p){
+double ListaEnc::getYL(std::string n,bool p){
     double y;
     for(int i = 0; i<sizeL; i++){
         if(n == linhas[i].getNome()){
@@ -209,11 +209,11 @@ void ListaEnc::setLSCN(double x,double y, int pos,bool p){
     linhas[pos].setSCN(x,y,p);
 }
 
-double ListaEnc::getlU(int pos,bool p){
+double ListaEnc::getUL(int pos,bool p){
     double x = linhas[pos].getU(p);
     return x;
 }
-double ListaEnc::getlV(int pos,bool p){
+double ListaEnc::getVL(int pos,bool p){
     double y = linhas[pos].getV(p);
     return y;
 }
@@ -223,16 +223,16 @@ int ListaEnc::getsizePL(){
     return sizePL;
 }
 
-std::string ListaEnc::getNdoPoligono(int pos){
+std::string ListaEnc::getNPL(int pos){
     return poligonos[pos].getNome();
 }
 
-int ListaEnc::getSdoPoligono(int pos){
+int ListaEnc::getSPL(int pos){
     int s = poligonos[pos].getSize();
     return s;
 }
 
-int ListaEnc::getSdoPoligono(std::string n){
+int ListaEnc::getSPL(std::string n){
     
     double r;
     for(int i = 0; i<sizePL; i++){
@@ -252,17 +252,17 @@ void ListaEnc::addPL(int a, double x[], double y[], std::string n){
     sizePL += 1;
 }
 
-double ListaEnc::getXdoPoligono(int pos,int a){
+double ListaEnc::getXPL(int pos,int a){
     double x = poligonos[pos].getX(a);
     return x;
 }
 
-double ListaEnc::getYdoPoligono(int pos,int a){
+double ListaEnc::getYPL(int pos,int a){
     double y = poligonos[pos].getY(a);
     return y;
 }
 
-double ListaEnc::getXdoPoligono(std::string n,int a){
+double ListaEnc::getXPL(std::string n,int a){
     double r;
     for(int i = 0; i<sizePL; i++){
         if(n == poligonos[i].getNome()){
@@ -272,7 +272,7 @@ double ListaEnc::getXdoPoligono(std::string n,int a){
     }
 }
 
-double ListaEnc::getYdoPoligono(std::string n,int a){
+double ListaEnc::getYPL(std::string n,int a){
     double r;
     for(int i = 0; i<sizePL; i++){
         if(n == poligonos[i].getNome()){
@@ -282,7 +282,7 @@ double ListaEnc::getYdoPoligono(std::string n,int a){
     }
 }
 
-void ListaEnc::setPPoligono(double x,double y,std::string n, int pos){
+void ListaEnc::setPL(double x,double y,std::string n, int pos){
     for(int i = 0; i<sizePL; i++){
         if(n == poligonos[i].getNome()){
             poligonos[i].setP(x,y,pos);
@@ -290,7 +290,7 @@ void ListaEnc::setPPoligono(double x,double y,std::string n, int pos){
     }
 }
 
-void ListaEnc::setPPoligonoSCN(double x,double y,int n, int pos){
+void ListaEnc::setPLSCN(double x,double y,int n, int pos){
     poligonos[n].setPSCN(x,y,pos);
 }
 
@@ -298,21 +298,15 @@ void ListaEnc::clearPL(){
     sizePL = 0;
 }
 
-double ListaEnc::getUdoPoligono(int pos,int a){
+double ListaEnc::getUPL(int pos,int a){
     double x = poligonos[pos].getU(a);
     return x;
 }
 
-double ListaEnc::getVdoPoligono(int pos,int a){
+double ListaEnc::getVPL(int pos,int a){
     double y = poligonos[pos].getV(a);
     return y;
 }
-
-Ponto* ListaEnc::getPontosPoligono(int pos){
-    return poligonos[pos].getPontos();
-}
-
-
 
 
 
@@ -321,16 +315,16 @@ int ListaEnc::getsizeC(){
     return sizeC;
 }
 
-std::string ListaEnc::getNCurva(int pos){
+std::string ListaEnc::getNC(int pos){
     return curvas[pos].getNome();
 }
 
-int ListaEnc::getSCurva(int pos){
+int ListaEnc::getSC(int pos){
     int s = curvas[pos].getSize();
     return s;
 }
 
-int ListaEnc::getSCurva(std::string n){
+int ListaEnc::getSC(std::string n){
     
     int r;
     for(int i = 0; i<sizeC; i++){
@@ -341,22 +335,22 @@ int ListaEnc::getSCurva(std::string n){
     }
 }
 
-void ListaEnc::addC(double*x,double*y, std::string n, int size){
-    curvas[sizeC] = Curva(x,y,n,size);
+void ListaEnc::addC(double*x,double*y, std::string n, int size,bool t){
+    curvas[sizeC] = Curva(x,y,n,size,t);
     sizeC += 1;
 }
 
-double ListaEnc::getXCurva(int pos,int a){
+double ListaEnc::getXC(int pos,int a){
     double x = curvas[pos].getX(a);
     return x;
 }
 
-double ListaEnc::getYCurva(int pos,int a){
+double ListaEnc::getYC(int pos,int a){
     double y = curvas[pos].getY(a);
     return y;
 }
 
-double ListaEnc::getXCurva(std::string n,int a){
+double ListaEnc::getXC(std::string n,int a){
     double r;
     for(int i = 0; i<sizeC; i++){
         if(n == curvas[i].getNome()){
@@ -366,7 +360,7 @@ double ListaEnc::getXCurva(std::string n,int a){
     }
 }
 
-double ListaEnc::getYCurva(std::string n,int a){
+double ListaEnc::getYC(std::string n,int a){
     double r;
     for(int i = 0; i<sizeC; i++){
         if(n == curvas[i].getNome()){
@@ -381,12 +375,12 @@ void ListaEnc::clearC(){
     sizeC = 0;
 }
 
-double ListaEnc::getUCurva(int pos,int a){
+double ListaEnc::getUC(int pos,int a){
     double x = curvas[pos].getU(a);
     return x;
 }
 
-double ListaEnc::getVCurva(int pos,int a){
+double ListaEnc::getVC(int pos,int a){
     double y = curvas[pos].getV(a);
     return y;
 }

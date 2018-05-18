@@ -16,4 +16,11 @@ std::string ObjGrafico::getNome(){
 }
 void ObjGrafico::setNome(std::string dado){
     nome = dado;
-}	 	  	     	  	      	     	 	    	        	 	
+}
+
+bool ObjGrafico::getEstado(){
+    return estado;
+}
+bool ObjGrafico::setEstado(bool e){
+    estado = e;
+}

@@ -4,9 +4,13 @@
 #include <iostream>
 #include <vector>
 #include "Ponto.h"
+#include "Linha.h"
+#include "Poligono.h"
 
 class Window {
 public:
+    typedef int OutCode;
+
     Window();
     Window(const Window& orig);
     virtual ~Window();
@@ -32,13 +36,13 @@ public:
     double getYcentro();
     
     bool clipPonto(double x, double y);
-    double* cohenSutherland(double x, double y, double a, double b);
-    bool* getQuadrante(double x, double y);
+    Linha cohenSutherland(double x, double y, double a, double b);
+    OutCode getQuadrante(double x, double y);
     
-    double* liangBarsky(double x, double y, double a, double b);
-    double max_min(double* dados, int index,bool status);
+    double maxi(double arr[],int n);
+    double mini(double arr[], int n);
+    Linha liangBarsky(double x, double y, double a, double b);
     
-    Ponto* weilerAtherton(Ponto* pontos,int sizePoligono);
     
 private:
     Ponto max;

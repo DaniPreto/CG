@@ -9,10 +9,11 @@ Curva::Curva(const Curva& orig) {
 Curva::~Curva() {
 }
 
-Curva::Curva(double * x , double * y,std::string n, int s) {
+Curva::Curva(double * x , double * y,std::string n, int s,bool t) {
     
     nome = n;
     size = s;
+    estado = t;
     
     for(int i = 0; i<size;i++){
         ponto[i] = Ponto(x[i],y[i]);

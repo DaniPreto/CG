@@ -19,6 +19,7 @@ public:
     
     
     int getSize();
+    void setSize(int size);
     void addP(double x, double y);
     void setP(double x, double y, int a);
     double getX(int pos);
@@ -33,6 +34,7 @@ private:
     Ponto pontos[100];
     int numeroPontos;
     int posicao;
+    bool estado;
 
 };
 

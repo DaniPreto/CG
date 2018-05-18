@@ -9,8 +9,12 @@ public:
     virtual ~ObjGrafico();
     std::string getNome();
     void setNome(std::string dado);
+    
+    bool getEstado();
+    bool setEstado(bool e);
 protected:
     std::string nome;
+    bool estado;
 };
 
 #endif /* OBJGRAFICO_H */
