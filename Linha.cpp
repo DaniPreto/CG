@@ -12,72 +12,35 @@ Linha::~Linha() {
 }
 
 Linha::Linha(double a, double b, double c , double d){
-    Ponto p(a,b);
-    Ponto p1(c,d);
-    ini = p;
-    fim = p1;
+
+    tipo = 1;
+    Coordenada b1(a,b,0);
+    Coordenada b2(c,d,0);
+    addCoordenada(b1);
+    addCoordenada(b2);
+    
 }
 Linha::Linha(double a, double b, double c , double d,std::string n){
-    Ponto p(a,b);
-    Ponto p1(c,d);
-    ini = p;
-    fim = p1;
+    
     nome = n;
+    tipo = 1;
+    Coordenada b1(a,b,0);
+    Coordenada b2(c,d,0);
+    addCoordenada(b1);
+    addCoordenada(b2);
+
 }
 
 void Linha::setP(double x , double y, bool p){
+   Coordenada c(x,y,0);
     if(p){
-        Ponto p(x,y);
-        ini = p;
+        m_coords[0] =  c;
     }
     else{
-        Ponto p(x,y);
-        fim = p;
+        m_coords[1] = c;
     }
 }	 	  	     	  	      	     	 	    	        	 	
 
-double Linha::getX(bool p){
-    if(p)
-        return ini.getX();
-    else
-        return fim.getX();
-}
-
-double Linha::getY(bool p){
-    if(p)
-        return ini.getY();
-    else
-        return fim.getY();
-}
-
-
-
-//----------------------------------------------------------------------SCN
-
-void Linha::setSCN(double x , double y, bool p){
-    if(p){
-        ini.setU(x);
-        ini.setV(y);
-    }
-    else{
-        fim.setU(x);
-        fim.setV(y);
-    }
-}
-
-double Linha::getU(bool p){
-    if(p)
-        return ini.getU();
-    else
-        return fim.getU();
-}	 	  	     	  	      	     	 	    	        	 	
-
-double Linha::getV(bool p){
-    if(p)
-        return ini.getV();
-    else
-        return fim.getV();
-}
 
 
 

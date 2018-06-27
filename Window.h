@@ -3,20 +3,18 @@
 #define WINDOW_H
 #include <iostream>
 #include <vector>
-#include "Ponto.h"
 #include "Linha.h"
-#include "Poligono.h"
 
-class Window {
+class Window : public ObjGrafico {
 public:
-    typedef int OutCode;
+    typedef int OutCode; 
 
     Window();
     Window(const Window& orig);
     virtual ~Window();
     Window(double x, double y, double c,double d);
+    Window(Coordenadas c);
     
-    void setTeta(double v);
     void addTeta(double v);
     double getTeta();
     
@@ -31,9 +29,9 @@ public:
     bool getState();
     void rotate();
     
-    void calculaCentro();
     double getXcentro();
     double getYcentro();
+    double getZcentro();
     
     bool clipPonto(double x, double y);
     Linha cohenSutherland(double x, double y, double a, double b);
@@ -43,18 +41,22 @@ public:
     double mini(double arr[], int n);
     Linha liangBarsky(double x, double y, double a, double b);
     
+    void setTransforms(Coordenadas c){m_transforms = c;}
+    Coordenada getTransform(int i){return m_transforms[i];}
+    
+    Coordenada getCOP(){return cop;}
+  
     
 private:
-    Ponto max;
-    Ponto min;
-    bool state;
-    Ponto centro;
     double teta;
+    Coordenadas m_transforms;
+    Coordenada cop;
+    
 
 };
 
 
 
-#endif /* PONTO_H */
+#endif 
 
 	 	  	     	  	      	     	 	    	        	 	

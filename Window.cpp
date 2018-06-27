@@ -11,70 +11,90 @@ Window::~Window() {
 }
 
 Window::Window(double x, double y, double c,double d){
-    max = Ponto(x,y);
-    min = Ponto(c,d);
-    state = false;
-    centro = Ponto();
-    calculaCentro();
+    Coordenada b1(c,y,0);
+    Coordenada max(x,y,0);
+    Coordenada min(c,d,0);
+    Coordenada b2(x,d,0);
+    
+    addCoordenada(b1);
+    addCoordenada(max);
+    addCoordenada(min);
+    addCoordenada(b2);
+    
+
+    estado = false;
+    teta = 0;
+    tipo = 5;
+
     }
+    
+Window::Window(Coordenadas c){
+    m_coords = c;
+    tipo = 5;
+}
 
 void Window::setMAX(double x, double y){
-    max.setX(x);
-    max.setY(y);
-    }
+    m_coords[1].x = x;
+    m_coords[1].y = y;
+    
+    m_coords[3].x = x;
+    m_coords[0].y = y;
+    }	 	  	     	  	      	     	 	    	        	 	
 
 void Window::setMIN(double x, double y){
-    min.setX(x);
-    min.setY(y);
+    m_coords[2].x = x;
+    m_coords[2].y = y;
+    
+    m_coords[0].x = x;
+    m_coords[3].y = y;
     }	 
 
 double Window::getXmax(){
-    return max.getX();
+    return m_coords[1].x;
     }
 
 double Window::getXmin(){
-    return min.getX();
+    return m_coords[2].x;
     }
     
 double Window::getYmax(){
-    return max.getY();
+    return m_coords[1].y;
     }
 
 double Window::getYmin(){
-    return min.getY();
+    return m_coords[2].y;
     }
 
 //----------------------------------------------------------------------------------------------------Rotação window
 void Window::rotate(){
-    state = true;
+    estado = true;
 }
 
-bool Window::getState(){
-    return state;
-}   
     
-void Window::calculaCentro(){
-    double x = (max.getX() + min.getX())/2;
-    double y = (max.getY() + min.getY())/2;
-    centro.setX(x);
-    centro.setY(y);
-    }	 	  	     	  	      	     	 	    	        	 	
-
 
 double Window::getXcentro(){
-    return centro.getX();
-    }
+    double x = (m_coords[0].x + m_coords[1].x + m_coords[2].x + m_coords[3].x)/4;
+    return x;
+    }	 	  	     	  	      	     	 	    	        	 	
 
 double Window::getYcentro(){
-    return centro.getY();
+    double y = (m_coords[0].y + m_coords[1].y + m_coords[2].y + m_coords[3].y)/4;
+    return y;
+    }
+    
+double Window::getZcentro(){
+    double z = (m_coords[0].z + m_coords[1].z + m_coords[2].z + m_coords[3].z)/4;
+    return z;
     }
     
     
-void Window::setTeta(double v){
-    teta = v;
-}
 void Window::addTeta(double v){
     teta += v;
+    
+    if(teta == 0)
+        estado = false;
+    else
+        estado = true;
 }
 double Window::getTeta(){
     return teta;
@@ -82,12 +102,19 @@ double Window::getTeta(){
 
 //--------------------------------------------------------------------------------Clipagem-----------------------------------
 bool Window::clipPonto(double x, double y){
-    double xMax = max.getX();
-    double yMax = max.getY();
-    double xMin = min.getX();
-    double yMin = min.getY();
+    double xmax = m_coords[1].x;
+    double ymax = m_coords[1].y;
+    double xmin = m_coords[2].x;
+    double ymin = m_coords[2].y;
     
-    if(x < xMax && x > xMin && y < yMax && y > yMin){
+    if(estado){
+        xmax = 1;
+        ymax = 1;
+        xmin = -1;
+        ymin = -1;
+    }	 	  	     	  	      	     	 	    	        	 	
+    
+    if(x < xmax && x > xmin && y < ymax && y > ymin){
         return true;
     }
     
@@ -102,38 +129,54 @@ const int BOTTOM = 4; // 0100
 const int TOP = 8;    // 1000
 
 OutCode Window::getQuadrante(double x, double y){
-    double xmax = max.getX();
-    double ymax = max.getY();
-    double xmin = min.getX();
-    double ymin = min.getY();
+    double xmax = m_coords[1].x;
+    double ymax = m_coords[1].y;
+    double xmin = m_coords[2].x;
+    double ymin = m_coords[2].y;
+    
+    if(estado){
+        xmax = 1;
+        ymax = 1;
+        xmin = -1;
+        ymin = -1;
+        
+    }
     
     OutCode code;
 
-	code = INSIDE;          // initialised as being inside of [[clip window]]
+	code = INSIDE;          // iinicializa em 0, como se estivesse dentro da window
 
-	if (x < xmin)           // to the left of clip window
+	if (x < xmin)           // esquerda
 		code |= LEFT;
-	else if (x > xmax)      // to the right of clip window
+	else if (x > xmax)      // direita
 		code |= RIGHT;
-	if (y < ymin)           // below the clip window
+	if (y < ymin)           // abaixo
 		code |= BOTTOM;
-	else if (y > ymax)      // above the clip window
+	else if (y > ymax)      // cima
 		code |= TOP;
 
 	return code;
-}
+}	 	  	     	  	      	     	 	    	        	 	
 
 Linha Window::cohenSutherland(double x0, double y0, double x1, double y1){
-
-    double xmax = max.getX();
-    double ymax = max.getY();
-    double xmin = min.getX();
-    double ymin = min.getY();
+    
+    double xmax = m_coords[1].x;
+    double ymax = m_coords[1].y;
+    double xmin = m_coords[2].x;
+    double ymin = m_coords[2].y;
+    
+    if(estado){
+        xmax = 1;
+        ymax = 1;
+        xmin = -1;
+        ymin = -1;
+        
+    }
     
     Linha l = Linha(x0, y0, x1 ,y1);
     l.setEstado(false);
     
-    	// compute outcodes for P0, P1, and whatever point lies outside the clip rectangle
+    	// pega os outcodes dos pontos
 	OutCode outcode0 = getQuadrante(x0, y0);
 	OutCode outcode1 = getQuadrante(x1, y1);
 	bool accept = false;
@@ -149,19 +192,19 @@ Linha Window::cohenSutherland(double x0, double y0, double x1, double y1){
 
 			OutCode outcodeOut = outcode0 ? outcode0 : outcode1;
 
-			if (outcodeOut & TOP) {           // point is above the clip window
+			if (outcodeOut & TOP) {           //cima
 				x = x0 + (x1 - x0) * (ymax - y0) / (y1 - y0);
 				y = ymax;
-			} else if (outcodeOut & BOTTOM) { // point is below the clip window
+			} else if (outcodeOut & BOTTOM) { // baixo
 				x = x0 + (x1 - x0) * (ymin - y0) / (y1 - y0);
 				y = ymin;
-			} else if (outcodeOut & RIGHT) {  // point is to the right of clip window
+			} else if (outcodeOut & RIGHT) {  // direita
 				y = y0 + (y1 - y0) * (xmax - x0) / (x1 - x0);
 				x = xmax;
-			} else if (outcodeOut & LEFT) {   // point is to the left of clip window
+			} else if (outcodeOut & LEFT) {   // esquerda
 				y = y0 + (y1 - y0) * (xmin - x0) / (x1 - x0);
 				x = xmin;
-			}
+			}	 	  	     	  	      	     	 	    	        	 	
 
 			// Now we move outside point to intersection point to clip
 			// and get ready for next pass.
@@ -192,14 +235,14 @@ double Window::maxi(double arr[],int n) {
   return m;
 }
 
-// this function gives the minimum
+
 double Window::mini(double arr[], int n) {
   double m = 1;
   for (int i = 0; i < n; ++i)
     if (m > arr[i])
         m = arr[i];
   return m;
-}
+}	 	  	     	  	      	     	 	    	        	 	
 
 
 Linha Window::liangBarsky(double x1, double y1, double x2, double y2){
@@ -207,12 +250,19 @@ Linha Window::liangBarsky(double x1, double y1, double x2, double y2){
     Linha l = Linha(x1, y1, x2 ,y2);
     l.setEstado(false);
     
-    double xmax = max.getX();
-    double ymax = max.getY();
-    double xmin = min.getX();
-    double ymin = min.getY();
+    double xmax = m_coords[1].x;
+    double ymax = m_coords[1].y;
+    double xmin = m_coords[2].x;
+    double ymin = m_coords[2].y;
     
-    // defining variables
+    if(estado){
+        xmax = 1;
+        ymax = 1;
+        xmin = -1;
+        ymin = -1;
+    }
+    
+    // define variaveis
     double p1 = -(x2 - x1);
     double p2 = -p1;
     double p3 = -(y2 - y1);
@@ -228,15 +278,15 @@ Linha Window::liangBarsky(double x1, double y1, double x2, double y2){
     posarr[0] = 1;
     negarr[0] = 0;
     
-    if ((p1 == 0 && q1 < 0) || (p3 == 0 && q3 < 0)) {
+    if ((p1 == 0 && q1 < 0) || (p3 == 0 && q3 < 0)) {	 	  	     	  	      	     	 	    	        	 	
       return l;
     }
     if (p1 != 0) {
         double r1 = q1 / p1;
         double r2 = q2 / p2;
         if (p1 < 0) {
-            negarr[negind++] = r1; // for negative p1, add it to negative array
-            posarr[posind++] = r2; // and add p2 to positive array
+            negarr[negind++] = r1; // para p1 negativo, adiciona no vetor de negativos
+            posarr[posind++] = r2; // e adiciona p2 nos positivos
         } else {
             negarr[negind++] = r2;
             posarr[posind++] = r1;
@@ -256,17 +306,17 @@ Linha Window::liangBarsky(double x1, double y1, double x2, double y2){
 
     double xn1, yn1, xn2, yn2;
     double rn1, rn2;
-    rn1 = maxi(negarr, negind); // maximum of negative array
-    rn2 = mini(posarr, posind); // minimum of positive array
+    rn1 = maxi(negarr, negind); // maximo negativo
+    rn2 = mini(posarr, posind); // minimo positivo
 
-    if (rn1 > rn2)  { // reject
+    if (rn1 > rn2)  { // rejeita
         return l;
     }
     
     l.setEstado(true);
     
     xn1 = x1 + p2 * rn1;
-    yn1 = y1 + p4 * rn1; // computing new points
+    yn1 = y1 + p4 * rn1; // calcula novos pontos
     l.setP(xn1,yn1,true);
 
     xn2 = x1 + p2 * rn2;
@@ -275,7 +325,7 @@ Linha Window::liangBarsky(double x1, double y1, double x2, double y2){
     
     return l;
   
-}
+}	 	  	     	  	      	     	 	    	        	 	
 
 
 
@@ -293,18 +343,6 @@ Linha Window::liangBarsky(double x1, double y1, double x2, double y2){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     
     
     
@@ -356,4 +394,4 @@ Linha Window::liangBarsky(double x1, double y1, double x2, double y2){
     
     
     
-    
+    	 	  	     	  	      	     	 	    	        	 	

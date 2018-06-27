@@ -1,19 +1,19 @@
 
 
-#ifndef CURVA_H
-#define CURVA_H
+#ifndef SUPERFICIE_H
+#define SUPERFICIE_H
+
 
 #include <iostream>
 #include <vector>
 #include "ObjGrafico.h"
 #include<string>
 
-class Curva : public ObjGrafico {
+class Superficie : public ObjGrafico {
 public:
-    Curva(){}
-    Curva(const Curva& orig){}
-    virtual ~Curva(){}
-    Curva(std::string n,bool t){nome = n;estado = t;posicao = 0;tipo =3;}
+    Superficie(const Superficie& orig){}
+    virtual ~Superficie(){}
+    Superficie(std::string n,bool t){nome = n;estado = t;posicao = 0;tipo =6;}
     
     int getPosicao(){return posicao;}
     int addPosicao(){posicao += 1;}

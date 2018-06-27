@@ -18,6 +18,7 @@ public:
     virtual ~Linha();
     Linha(double a, double b, double c , double d);
     Linha(double a, double b, double c , double d, std::string n);
+    Linha(std::string n,Coordenadas c){nome = n;tipo = 1;m_coords = c;}
     
     
     void setP(double x , double y, bool p);
@@ -25,17 +26,7 @@ public:
     double getY(bool p);
 
     
-    void setSCN(double x , double y, bool p);
-    double getU(bool p);
-    double getV(bool p);
-    
-    
-private:
-    Ponto ini;
-    Ponto fim;
-    
-    
 };
 
-#endif /* LINHA_H */
+#endif 
 	 	  	     	  	      	     	 	    	        	 	
